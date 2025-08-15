@@ -53,7 +53,7 @@ export default function HomePage() {
             </div>
             
             <p className="text-xl md:text-2xl mb-12 max-w-4xl mx-auto leading-relaxed font-light opacity-90">
-              At RP Sr. Sec. School Khairekan, we don't just educate minds – we nurture souls, 
+              At R.P. Sr. Sec. School Khairekan, we don't just educate minds – we nurture souls, 
               ignite passions, and sculpt the visionary leaders who will shape tomorrow's India.
             </p>
             
@@ -126,7 +126,7 @@ export default function HomePage() {
         <div className="container mx-auto px-6">
           <div className="text-center mb-20">
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-              Why Families <span className="kinetic-text text-red-500">Choose</span> RP Sr. Sec. School?
+              Why Families <span className="kinetic-text text-red-500">Choose</span> R.P. Sr. Sec. School?
             </h2>
             <p className="text-lg sm:text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto">
               Because every child deserves an education that touches their soul, ignites their potential, and transforms their dreams into reality
@@ -260,7 +260,7 @@ export default function HomePage() {
               <div className="space-y-4">
                 {[
                   {
-                    title: "RP Sr. Sec. School Students Win State Science Fair",
+                    title: "R.P. Sr. Sec. School Students Win State Science Fair",
                     excerpt: "Our brilliant Class XII students dominated the robotics category, showcasing innovation that left judges speechless...",
                     date: "12 Jan 2025"
                   },
@@ -339,7 +339,7 @@ export default function HomePage() {
               {
                 name: "Arjun Sharma",
                 achievement: "IIT Delhi, Computer Science",
-                quote: "RP Sr. Sec. School didn't just teach me subjects – they taught me to dream beyond horizons I never knew existed. They turned an ordinary village boy into someone extraordinary.",
+                quote: "R.P. Sr. Sec. School didn't just teach me subjects – they taught me to dream beyond horizons I never knew existed. They turned an ordinary village boy into someone extraordinary.",
                 year: "Batch of 2023",
                 highlight: "From village boy to IIT topper"
               },
@@ -353,7 +353,7 @@ export default function HomePage() {
               {
                 name: "Rahul Singh",
                 achievement: "Stanford University, AI Research",
-                quote: "RP Sr. Sec. School gave me wings to soar globally. In these hallowed halls, dreams don't just take flight – they conquer the world.",
+                quote: "R.P. Sr. Sec. School gave me wings to soar globally. In these hallowed halls, dreams don't just take flight – they conquer the world.",
                 year: "Batch of 2021", 
                 highlight: "Youngest patent holder from Haryana"
               }
@@ -382,7 +382,7 @@ export default function HomePage() {
             </h2>
             <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 mb-8 sm:mb-12 leading-relaxed px-2">
               Every legendary journey begins with a single courageous step. Let's co-author your child's extraordinary success story together 
-              at RP Sr. Sec. School Khairekan, where impossible dreams transform into inevitable realities.
+              at R.P. Sr. Sec. School Khairekan, where impossible dreams transform into inevitable realities.
             </p>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16">
@@ -440,7 +440,7 @@ export default function HomePage() {
               {
                 icon: "🏫",
                 title: "Visit Our Campus",
-                info: "RP Sr. Sec. School Campus\nKhairekan, Haryana - 125055\nNear Sirsa",
+                info: "R.P. Sr. Sec. School Campus\nKhairekan, Haryana - 125055\nNear Sirsa",
                 action: "Get Directions"
               },
               {
@@ -484,7 +484,7 @@ export default function HomePage() {
                 </div>
                 <div>
                   <h3 className="text-xl sm:text-2xl font-bold mb-1">
-                    RP Sr. Sec. School <span className="text-orange-400">Khairekan</span>
+                    R.P. Sr. Sec. School <span className="text-orange-400">Khairekan</span>
                   </h3>
                   <p className="text-gray-400">
                     Where Every Dream Finds Its Wings to Soar Beyond Horizons
@@ -521,7 +521,7 @@ export default function HomePage() {
                 <div className="flex items-start space-x-3">
                   <FiMapPin className="w-5 h-5 text-orange-400 mt-1" />
                   <div className="text-gray-300">
-                    <p>RP Sr. Sec. School Campus</p>
+                    <p>R.P. Sr. Sec. School Campus</p>
                     <p>Khairekan, Haryana - 125055</p>
                     <p>Near Sirsa</p>
                   </div>
@@ -541,7 +541,7 @@ export default function HomePage() {
           {/* Bottom Bar */}
           <div className="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
             <div className="text-gray-400 mb-4 md:mb-0">
-              © 2025 RP Sr. Sec. School Khairekan. All rights reserved.
+              © 2025 R.P. Sr. Sec. School Khairekan. All rights reserved.
             </div>
             <div className="text-gray-400">
               Made with <span className="text-red-400 animate-pulse">❤️</span> for our students' bright future

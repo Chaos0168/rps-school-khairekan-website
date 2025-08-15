@@ -57,7 +57,7 @@ export default function Header() {
                 </div>
                 <div className="min-w-0 overflow-hidden">
                   <h1 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent whitespace-nowrap overflow-hidden text-ellipsis">
-                    {language === 'en' ? 'RP Sr. Sec. School' : 'आरपी सीनियर सेकेंडरी स्कूल'}
+                    {language === 'en' ? 'R.P. Sr. Sec. School' : 'आर.पी. सीनियर सेकेंडरी स्कूल'}
                   </h1>
                   <p className="text-sm sm:text-base text-slate-600 font-medium whitespace-nowrap overflow-hidden text-ellipsis">
                     {language === 'en' ? 'Khairekan, Haryana' : 'खैरेकान, हरियाणा'}
