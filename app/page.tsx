@@ -374,18 +374,18 @@ export default function HomePage() {
       </section>
 
       {/* Call to Action - Emotional */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-6 text-center">
+      <section className="py-16 sm:py-24 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 text-center">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-6xl font-bold text-gray-900 mb-8">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 sm:mb-8 leading-tight">
               Your Child's <span className="kinetic-text text-red-500">Journey</span> Starts Here
             </h2>
-            <p className="text-2xl text-gray-600 mb-12 leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 mb-8 sm:mb-12 leading-relaxed px-2">
               Every legendary journey begins with a single courageous step. Let's co-author your child's extraordinary success story together 
               at RP Sr. Sec. School Khairekan, where impossible dreams transform into inevitable realities.
             </p>
             
-            <div className="grid md:grid-cols-3 gap-8 mb-16">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16">
               {[
                 {
                   step: "01",
@@ -403,19 +403,19 @@ export default function HomePage() {
                   desc: "Join our family and watch your child's confidence and potential flourish"
                 }
               ].map((step, index) => (
-                <div key={index} className="story-card text-center">
-                  <div className="text-4xl font-bold text-orange-500 mb-4">{step.step}</div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h3>
-                  <p className="text-gray-600">{step.desc}</p>
+                <div key={index} className="story-card text-center p-4 sm:p-6">
+                  <div className="text-3xl sm:text-4xl font-bold text-orange-500 mb-3 sm:mb-4">{step.step}</div>
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">{step.title}</h3>
+                  <p className="text-sm sm:text-base text-gray-600 leading-relaxed">{step.desc}</p>
                 </div>
               ))}
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <button className="btn-primary text-lg sm:text-xl px-8 sm:px-12 py-4 sm:py-6">
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center px-4">
+              <button className="btn-primary text-base sm:text-lg lg:text-xl px-6 sm:px-8 lg:px-12 py-3 sm:py-4 lg:py-6 w-full sm:w-auto">
                 Start Your Child's Journey
               </button>
-              <button className="btn-secondary text-lg sm:text-xl px-8 sm:px-12 py-4 sm:py-6">
+              <button className="btn-secondary text-base sm:text-lg lg:text-xl px-6 sm:px-8 lg:px-12 py-3 sm:py-4 lg:py-6 w-full sm:w-auto">
                 Schedule Campus Visit
               </button>
             </div>
