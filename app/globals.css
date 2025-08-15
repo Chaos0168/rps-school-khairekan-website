@@ -221,20 +221,28 @@
   }
 
   .impact-number {
-    @apply font-bold text-transparent bg-clip-text;
-    background-image: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
-    font-size: clamp(2.5rem, 6vw, 5rem);
-    line-height: 1.1;
-    text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
-    animation: shimmer 3s ease-in-out infinite;
+    @apply font-bold;
+    background: linear-gradient(135deg, #E8A5C7 0%, #7DD3FC 25%, #A7F3D0 50%, #FDE68A 75%, #E8A5C7 100%);
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    line-height: 1.2;
+    animation: gradientShift 4s ease-in-out infinite;
+    display: inline-block;
   }
 
-  @keyframes shimmer {
-    0%, 100% {
-      background-image: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
     }
     50% {
-      background-image: linear-gradient(135deg, #00f2fe 0%, #4facfe 25%, #f093fb 50%, #764ba2 75%, #667eea 100%);
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
     }
   }
 
@@ -266,6 +274,18 @@
     .kinetic-text {
       font-size: clamp(1.5rem, 8vw, 3rem) !important;
       line-height: 1.2 !important;
+    }
+    
+    .impact-number {
+      font-size: clamp(2rem, 12vw, 3.5rem) !important;
+      line-height: 1.1 !important;
+    }
+  }
+
+  /* Medium screens optimization */
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .impact-number {
+      font-size: clamp(3rem, 6vw, 4rem) !important;
     }
   }
 } 
