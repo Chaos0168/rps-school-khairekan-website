@@ -125,8 +125,9 @@ export default function HomePage() {
       <section className="py-24 relative bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="container mx-auto px-6">
           <div className="text-center mb-20">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-              Why Families <span className="kinetic-text text-red-500">Choose</span> R.P. Sr. Sec. School?
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              <span className="block sm:inline">Why Families <span className="kinetic-text text-red-500">Choose</span></span>{' '}
+              <span className="whitespace-nowrap">R.P. Sr. Sec. School?</span>
             </h2>
             <p className="text-lg sm:text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto">
               Because every child deserves an education that touches their soul, ignites their potential, and transforms their dreams into reality
