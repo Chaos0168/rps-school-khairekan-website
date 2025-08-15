@@ -45,52 +45,54 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Modern Professional Header */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-200 shadow-lg">
-        <div className="container mx-auto px-6">
-          <div className="flex items-center justify-between py-5">
-            {/* Enhanced Logo */}
-            <div className="flex items-center space-x-4">
+      {/* Modern Responsive Header */}
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-200 shadow-sm">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="flex items-center justify-between py-3 sm:py-4">
+            {/* Responsive Logo */}
+            <div className="flex items-center space-x-2 sm:space-x-3">
               <div className="flex items-center">
-                <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mr-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-                  <span className="text-white font-bold text-xl">RP</span>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center mr-2 sm:mr-3 shadow-md hover:shadow-lg transition-all duration-300">
+                  <span className="text-white font-bold text-sm sm:text-lg">RP</span>
                 </div>
-                <div>
-                  <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                <div className="min-w-0 flex-1">
+                  <h1 className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent truncate">
                     {language === 'en' ? 'RP Sr. Sec. School Khairekan' : 'आरपी सीनियर सेकेंडरी स्कूल खैरेकान'}
                   </h1>
-                  <p className="text-sm text-slate-600 font-medium">
+                  <p className="text-xs sm:text-sm text-slate-600 font-medium truncate hidden sm:block">
                     {language === 'en' ? 'CBSE Affiliated • Excellence in Education' : 'सीबीएसई संबद्ध • शिक्षा में उत्कृष्टता'}
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Enhanced Desktop Navigation */}
-            <nav className="hidden lg:flex items-center space-x-2">
-              {[
-                { en: 'Home', hi: 'मुख्य' },
-                { en: 'About', hi: 'के बारे में' },
-                { en: 'Academics', hi: 'शैक्षणिक' },
-                { en: 'Notices', hi: 'सूचनाएं' },
-                { en: 'News', hi: 'समाचार' },
-                { en: 'Gallery', hi: 'गैलरी' },
-              ].map((item, index) => (
-                <a 
-                  key={index}
-                  href="#" 
-                  className="text-slate-700 hover:text-orange-500 font-medium transition-all duration-300 px-4 py-3 rounded-xl hover:bg-orange-50 relative group"
-                >
-                  {language === 'en' ? item.en : item.hi}
-                  <span className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-orange-500 group-hover:w-1/2 group-hover:left-1/4 transition-all duration-300"></span>
-                </a>
-              ))}
-              <button className="btn-primary ml-8 relative overflow-hidden group">
-                <span className="relative z-10 font-semibold">
-                  {language === 'en' ? 'Admission Open 2026-27' : 'प्रवेश खुला 2026-27'}
-                </span>
+            {/* Responsive Navigation */}
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              {/* Compact Desktop Navigation */}
+              <nav className="hidden xl:flex items-center space-x-1">
+                {[
+                  { en: 'Home', hi: 'मुख्य' },
+                  { en: 'About', hi: 'के बारे में' },
+                  { en: 'Academics', hi: 'शैक्षणिक' },
+                  { en: 'Notices', hi: 'सूचनाएं' },
+                  { en: 'News', hi: 'समाचार' },
+                  { en: 'Gallery', hi: 'गैलरी' },
+                ].map((item, index) => (
+                  <a 
+                    key={index}
+                    href="#" 
+                    className="text-slate-700 hover:text-orange-500 font-medium transition-all duration-300 px-3 py-2 rounded-lg hover:bg-orange-50 text-sm"
+                  >
+                    {language === 'en' ? item.en : item.hi}
+                  </a>
+                ))}
+              </nav>
+              
+              {/* Responsive Admission Button */}
+              <button className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 sm:px-4 py-2 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg text-xs sm:text-sm whitespace-nowrap">
+                {language === 'en' ? 'Admission 2026-27' : 'प्रवेश 2026-27'}
               </button>
-            </nav>
+            </div>
 
             {/* Enhanced Mobile Menu Button */}
             <button 
