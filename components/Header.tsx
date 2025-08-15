@@ -1,15 +1,42 @@
 'use client'
 
-import React, { useState } from 'react'
-import { FiMenu, FiX, FiPhone, FiMail, FiMapPin } from 'react-icons/fi'
+import React, { useState, useEffect } from 'react'
+import { FiMenu, FiX, FiPhone, FiMail, FiMapPin, FiClock } from 'react-icons/fi'
 import { BiGlobe } from 'react-icons/bi'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [language, setLanguage] = useState('en')
+  const [currentTime, setCurrentTime] = useState(new Date())
 
   const toggleLanguage = () => {
     setLanguage(language === 'en' ? 'hi' : 'en')
+  }
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [])
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('en-IN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    })
+  }
+
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString('en-IN', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    })
   }
 
   return (
@@ -29,6 +56,13 @@ export default function Header() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2 text-slate-300 border border-slate-600 px-3 py-1 rounded-full bg-slate-800/50">
+                <FiClock className="w-4 h-4 text-orange-400" />
+                <div className="flex flex-col text-xs">
+                  <span className="font-medium">{formatTime(currentTime)}</span>
+                  <span className="text-slate-400">{formatDate(currentTime)}</span>
+                </div>
+              </div>
               <button 
                 onClick={toggleLanguage}
                 className="flex items-center space-x-2 text-slate-300 hover:text-orange-400 transition-all duration-300 px-3 py-1 rounded-full border border-slate-600 hover:border-orange-400 bg-slate-800/50 hover:bg-orange-400/10"
