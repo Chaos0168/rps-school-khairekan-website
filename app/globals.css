@@ -219,4 +219,28 @@
     66% { transform: translate(-20px, 20px) rotate(240deg); }
     100% { transform: translate(0, 0) rotate(360deg); }
   }
+
+  .impact-number {
+    @apply font-bold text-transparent bg-clip-text;
+    background-image: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    font-size: clamp(2rem, 5vw, 4rem);
+    line-height: 1.1;
+  }
+
+  /* Responsive adjustments for small screens */
+  @media (max-width: 640px) {
+    .btn-primary, .btn-secondary {
+      font-size: 0.875rem !important;
+      padding: 0.75rem 1.5rem !important;
+    }
+    
+    .story-card {
+      padding: 1rem !important;
+    }
+    
+    .kinetic-text {
+      font-size: clamp(1.5rem, 8vw, 3rem) !important;
+      line-height: 1.2 !important;
+    }
+  }
 } 

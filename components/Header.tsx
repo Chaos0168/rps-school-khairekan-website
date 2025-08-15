@@ -16,28 +16,30 @@ export default function Header() {
     <>
       {/* Modern Top Bar */}
       <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-3 px-4 text-sm border-b border-slate-700">
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center space-x-8">
-            <div className="flex items-center space-x-2 text-slate-300 hover:text-orange-400 transition-all duration-300 cursor-pointer group">
-              <FiPhone className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
-              <span className="font-medium">+91 98765 43210</span>
+        <div className="container mx-auto">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3 lg:gap-0">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-6">
+              <div className="flex items-center space-x-2 text-slate-300 hover:text-orange-400 transition-all duration-300 cursor-pointer group">
+                <FiPhone className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
+                <span className="font-medium text-xs sm:text-sm">+91 98765 43210</span>
+              </div>
+              <div className="flex items-center space-x-2 text-slate-300 hover:text-orange-400 transition-all duration-300 cursor-pointer group">
+                <FiMail className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
+                <span className="font-medium text-xs sm:text-sm">info@rpskhairekan.edu.in</span>
+              </div>
             </div>
-            <div className="flex items-center space-x-2 text-slate-300 hover:text-orange-400 transition-all duration-300 cursor-pointer group">
-              <FiMail className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
-              <span className="font-medium">info@rpskhairekan.edu.in</span>
-            </div>
-          </div>
-          <div className="flex items-center space-x-6">
-            <button 
-              onClick={toggleLanguage}
-              className="flex items-center space-x-2 text-slate-300 hover:text-orange-400 transition-all duration-300 px-3 py-1 rounded-full border border-slate-600 hover:border-orange-400 bg-slate-800/50 hover:bg-orange-400/10"
-            >
-              <BiGlobe className="w-4 h-4" />
-              <span className="font-medium">{language === 'en' ? 'हिंदी' : 'English'}</span>
-            </button>
-            <div className="flex items-center space-x-2 text-slate-300">
-              <FiMapPin className="w-4 h-4" />
-              <span className="font-medium">Khairekan, Haryana</span>
+            <div className="flex items-center justify-between sm:justify-end space-x-4">
+              <button 
+                onClick={toggleLanguage}
+                className="flex items-center space-x-2 text-slate-300 hover:text-orange-400 transition-all duration-300 px-3 py-1 rounded-full border border-slate-600 hover:border-orange-400 bg-slate-800/50 hover:bg-orange-400/10"
+              >
+                <BiGlobe className="w-4 h-4" />
+                <span className="font-medium text-xs sm:text-sm">{language === 'en' ? 'हिंदी' : 'English'}</span>
+              </button>
+              <div className="flex items-center space-x-2 text-slate-300">
+                <FiMapPin className="w-4 h-4" />
+                <span className="font-medium text-xs sm:text-sm">Khairekan, Haryana</span>
+              </div>
             </div>
           </div>
         </div>

@@ -81,7 +81,7 @@ export default function HomePage() {
             </p>
           </div>
           
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 text-center">
             {[
               { 
                 number: "2,500+", 
@@ -108,13 +108,13 @@ export default function HomePage() {
                 hindi: "सफलता की कहानियां"
               }
             ].map((stat, index) => (
-              <div key={index} className="story-card micro-interaction">
-                <div className="impact-number mb-4">
+              <div key={index} className="story-card micro-interaction px-4 py-6">
+                <div className="impact-number mb-4 text-3xl sm:text-4xl lg:text-5xl">
                   {stat.number}
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">{stat.label}</h3>
-                <p className="text-gray-600 text-sm mb-2">{stat.story}</p>
-                <p className="text-xs text-gray-500 font-hindi">{stat.hindi}</p>
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 leading-tight">{stat.label}</h3>
+                <p className="text-gray-600 text-sm mb-2 leading-relaxed px-2">{stat.story}</p>
+                <p className="text-xs text-gray-500 font-hindi leading-relaxed">{stat.hindi}</p>
               </div>
             ))}
           </div>
@@ -125,15 +125,15 @@ export default function HomePage() {
       <section className="py-24 relative bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="container mx-auto px-6">
           <div className="text-center mb-20">
-            <h2 className="text-6xl font-bold text-gray-900 mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
               Why Families <span className="kinetic-text text-red-500">Choose</span> RPS?
             </h2>
-            <p className="text-2xl text-gray-600 max-w-4xl mx-auto">
+            <p className="text-lg sm:text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto">
               Because every child deserves an education that touches their heart and ignites their potential
             </p>
           </div>
           
-          <div className="grid lg:grid-cols-3 gap-12 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 max-w-7xl mx-auto">
             {[
               {
                 icon: "🏛️",
@@ -172,11 +172,11 @@ export default function HomePage() {
                 impact: "One Family, 2500+ Hearts"
               }
             ].map((feature, index) => (
-              <div key={index} className="story-card group text-center">
-                <div className="feature-icon text-6xl mb-6 group-hover:scale-110 transition-all duration-500">
+              <div key={index} className="story-card group text-center px-4 py-6">
+                <div className="feature-icon text-4xl sm:text-5xl md:text-6xl mb-6 group-hover:scale-110 transition-all duration-500">
                   {feature.icon}
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">{feature.title}</h3>
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">{feature.title}</h3>
                 <p className="text-gray-600 mb-4 leading-relaxed italic">
                   "{feature.story}"
                 </p>
@@ -193,22 +193,22 @@ export default function HomePage() {
       <section className="py-24 bg-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               Stay <span className="kinetic-text text-orange-500">Updated</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
               Important notices, latest news, and daily inspiration for our school community
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-16">
             {/* Important Notices */}
             <div className="story-card">
               <div className="flex items-center mb-6">
                 <div className="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center mr-4">
                   <span className="text-white text-xl">📢</span>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">Important Notices</h3>
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900">Important Notices</h3>
               </div>
               <div className="space-y-4">
                 {[
@@ -255,7 +255,7 @@ export default function HomePage() {
                 <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center mr-4">
                   <span className="text-white text-xl">📰</span>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">Latest News</h3>
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900">Latest News</h3>
               </div>
               <div className="space-y-4">
                 {[
@@ -293,11 +293,11 @@ export default function HomePage() {
                 <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center mr-4">
                   <span className="text-white text-xl">💭</span>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">Thought of the Day</h3>
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900">Thought of the Day</h3>
               </div>
               
               <div className="text-center py-6">
-                <blockquote className="text-xl font-medium text-gray-800 mb-4 italic">
+                <blockquote className="text-lg sm:text-xl font-medium text-gray-800 mb-4 italic">
                   "Education is the most powerful weapon which you can use to change the world."
                 </blockquote>
                 <cite className="text-purple-600 font-semibold">- Nelson Mandela</cite>
@@ -305,7 +305,7 @@ export default function HomePage() {
 
               <div className="mt-8 p-4 bg-white/80 rounded-xl">
                 <h4 className="font-semibold text-gray-900 mb-3">Hindi Thought</h4>
-                <blockquote className="text-lg font-medium text-gray-800 mb-2 font-hindi">
+                <blockquote className="text-base sm:text-lg font-medium text-gray-800 mb-2 font-hindi">
                   "शिक्षा सबसे शक्तिशाली हथियार है जिससे आप दुनिया बदल सकते हैं।"
                 </blockquote>
                 <cite className="text-purple-600 font-semibold">- नेल्सन मंडेला</cite>
@@ -412,10 +412,10 @@ export default function HomePage() {
             </div>
             
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <button className="btn-primary text-xl px-12 py-6">
+              <button className="btn-primary text-lg sm:text-xl px-8 sm:px-12 py-4 sm:py-6">
                 Start Your Child's Journey
               </button>
-              <button className="btn-secondary text-xl px-12 py-6">
+              <button className="btn-secondary text-lg sm:text-xl px-8 sm:px-12 py-4 sm:py-6">
                 Schedule Campus Visit
               </button>
             </div>
@@ -427,15 +427,15 @@ export default function HomePage() {
       <section className="py-24 bg-gradient-to-br from-gray-900 to-black text-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
               Ready to <span className="kinetic-text text-orange-400">Connect?</span>
             </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            <p className="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto">
               We're here to answer your questions and welcome you into our family
             </p>
           </div>
           
-          <div className="grid lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
             {[
               {
                 icon: "🏫",
@@ -457,12 +457,12 @@ export default function HomePage() {
               }
             ].map((contact, index) => (
               <div key={index} className="story-card bg-gray-800 border-gray-700 text-center">
-                <div className="text-4xl mb-4">{contact.icon}</div>
-                <h3 className="text-xl font-bold mb-4">{contact.title}</h3>
+                <div className="text-3xl sm:text-4xl mb-4">{contact.icon}</div>
+                <h3 className="text-lg sm:text-xl font-bold mb-4">{contact.title}</h3>
                 <p className="text-gray-300 whitespace-pre-line mb-6 leading-relaxed">
                   {contact.info}
                 </p>
-                <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:transform hover:scale-105">
+                <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 hover:transform hover:scale-105 text-sm sm:text-base">
                   {contact.action}
                 </button>
               </div>
@@ -483,7 +483,7 @@ export default function HomePage() {
                   <span className="text-white font-bold text-2xl">RPS</span>
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold mb-1">
+                  <h3 className="text-xl sm:text-2xl font-bold mb-1">
                     RPS School <span className="text-orange-400">Khairekan</span>
                   </h3>
                   <p className="text-gray-400">
