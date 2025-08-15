@@ -53,8 +53,8 @@ export default function HomePage() {
             </div>
             
             <p className="text-xl md:text-2xl mb-12 max-w-4xl mx-auto leading-relaxed font-light opacity-90">
-              At RPS School Khairekan, we don't just educate minds – we nurture hearts, 
-              inspire dreams, and build the confident leaders of tomorrow's India.
+              At RP Sr. Sec. School Khairekan, we don't just educate minds – we nurture souls, 
+              ignite passions, and sculpt the visionary leaders who will shape tomorrow's India.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
@@ -77,7 +77,7 @@ export default function HomePage() {
               Stories That <span className="kinetic-text">Inspire</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Behind every number is a story of transformation, growth, and dreams realized
+              Behind every number lies a heartwarming story of profound transformation, extraordinary growth, and impossible dreams becoming beautiful realities
             </p>
           </div>
           
@@ -86,30 +86,30 @@ export default function HomePage() {
               { 
                 number: "2,500+", 
                 label: "Dreams Nurtured", 
-                story: "Young minds discovering their passion for learning",
+                story: "Young brilliant minds discovering their boundless passion for transformative learning",
                 hindi: "सपने पाले गए"
               },
               { 
                 number: "150+", 
                 label: "Mentors & Guides", 
-                story: "Dedicated teachers shaping futures with care",
+                story: "Dedicated master educators shaping brilliant futures with unwavering love and care",
                 hindi: "गुरु और मार्गदर्शक"
               },
               { 
                 number: "25+", 
                 label: "Years of Excellence", 
-                story: "A legacy of transforming lives in Haryana",
+                story: "A glorious legacy of transforming countless lives across Haryana and beyond",
                 hindi: "वर्षों की उत्कृष्टता"
               },
               { 
                 number: "99.2%", 
                 label: "Success Stories", 
-                story: "Students achieving their dreams and beyond",
+                story: "Extraordinary students achieving their wildest dreams and soaring far beyond",
                 hindi: "सफलता की कहानियां"
               }
             ].map((stat, index) => (
               <div key={index} className="story-card micro-interaction px-4 py-6">
-                <div className="impact-number mb-4 text-3xl sm:text-4xl lg:text-5xl">
+                <div className="impact-number mb-4">
                   {stat.number}
                 </div>
                 <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 leading-tight">{stat.label}</h3>
@@ -126,10 +126,10 @@ export default function HomePage() {
         <div className="container mx-auto px-6">
           <div className="text-center mb-20">
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-              Why Families <span className="kinetic-text text-red-500">Choose</span> RPS?
+              Why Families <span className="kinetic-text text-red-500">Choose</span> RP Sr. Sec. School?
             </h2>
             <p className="text-lg sm:text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto">
-              Because every child deserves an education that touches their heart and ignites their potential
+              Because every child deserves an education that touches their soul, ignites their potential, and transforms their dreams into reality
             </p>
           </div>
           
@@ -138,37 +138,37 @@ export default function HomePage() {
               {
                 icon: "🏛️",
                 title: "CBSE Excellence",
-                story: "Arjun from Class XII scored 98% and got into IIT Delhi. His journey started with our CBSE foundation.",
+                story: "Arjun from a humble farming family scored 98% and secured IIT Delhi. His extraordinary journey began with our unwavering CBSE foundation.",
                 impact: "Top 1% Results Nationally"
               },
               {
                 icon: "💝",
                 title: "Values That Matter",
-                story: "Priya organized a food drive for 500 families during COVID. Our values education shapes character.",
+                story: "Priya organized a food drive for 500 families during COVID. Our values education doesn't just teach – it transforms hearts.",
                 impact: "500+ Community Projects"
               },
               {
                 icon: "🚀",
                 title: "Innovation Hub",
-                story: "Rahul's AI project won National Science Fair. Our tech labs turn curiosity into innovation.",
+                story: "Rahul's groundbreaking AI project conquered the National Science Fair. Our state-of-the-art labs turn wild curiosity into world-changing innovation.",
                 impact: "50+ National Awards"
               },
               {
                 icon: "🌟",
                 title: "Individual Attention",
-                story: "Shy Meera became Student Council President. Small classes mean every voice is heard.",
+                story: "Shy, introverted Meera blossomed into Student Council President. Our intimate class sizes ensure every precious voice is not just heard – but celebrated.",
                 impact: "15:1 Student-Teacher Ratio"
               },
               {
                 icon: "🏆",
                 title: "Dreams Realized",
-                story: "Amit got Oxford scholarship for Economics. We don't just teach subjects, we unlock potential.",
+                story: "Amit secured a prestigious Oxford scholarship for Economics. We don't just teach subjects – we unlock hidden potential and create legends.",
                 impact: "25+ International Scholarships"
               },
               {
                 icon: "❤️",
                 title: "Extended Family",
-                story: "When Kavya's father was hospitalized, our entire school became her support system.",
+                story: "When Kavya's father was hospitalized, our entire school family rallied around her. Here, no child ever faces life's storms alone.",
                 impact: "One Family, 2500+ Hearts"
               }
             ].map((feature, index) => (
@@ -197,7 +197,7 @@ export default function HomePage() {
               Stay <span className="kinetic-text text-orange-500">Updated</span>
             </h2>
             <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
-              Important notices, latest news, and daily inspiration for our school community
+              Crucial updates, inspiring achievements, and daily motivation that keeps our vibrant school community connected and thriving
             </p>
           </div>
 
@@ -260,13 +260,13 @@ export default function HomePage() {
               <div className="space-y-4">
                 {[
                   {
-                    title: "RPS Students Win State Science Fair",
-                    excerpt: "Our Class XII students secured first place in robotics category...",
+                    title: "RP Sr. Sec. School Students Win State Science Fair",
+                    excerpt: "Our brilliant Class XII students dominated the robotics category, showcasing innovation that left judges speechless...",
                     date: "12 Jan 2025"
                   },
                   {
-                    title: "New Computer Lab Inauguration",
-                    excerpt: "State-of-the-art computer lab with 50 systems now open...",
+                    title: "Cutting-Edge Computer Lab Unveiled",
+                    excerpt: "Revolutionary computer lab with 50 advanced systems and AI capabilities now operational...",
                     date: "10 Jan 2025"
                   },
                   {
@@ -339,7 +339,7 @@ export default function HomePage() {
               {
                 name: "Arjun Sharma",
                 achievement: "IIT Delhi, Computer Science",
-                quote: "RPS didn't just teach me subjects - they taught me to dream bigger than I ever imagined.",
+                quote: "RP Sr. Sec. School didn't just teach me subjects – they taught me to dream beyond horizons I never knew existed. They turned an ordinary village boy into someone extraordinary.",
                 year: "Batch of 2023",
                 highlight: "From village boy to IIT topper"
               },
@@ -353,7 +353,7 @@ export default function HomePage() {
               {
                 name: "Rahul Singh",
                 achievement: "Stanford University, AI Research",
-                quote: "RPS gave me the foundation to compete globally. My dreams had no boundaries here.",
+                quote: "RP Sr. Sec. School gave me wings to soar globally. In these hallowed halls, dreams don't just take flight – they conquer the world.",
                 year: "Batch of 2021", 
                 highlight: "Youngest patent holder from Haryana"
               }
@@ -381,8 +381,8 @@ export default function HomePage() {
               Your Child's <span className="kinetic-text text-red-500">Journey</span> Starts Here
             </h2>
             <p className="text-2xl text-gray-600 mb-12 leading-relaxed">
-              Every great story begins with a single step. Let's write your child's success story together 
-              at RPS School Khairekan, where dreams become reality.
+              Every legendary journey begins with a single courageous step. Let's co-author your child's extraordinary success story together 
+              at RP Sr. Sec. School Khairekan, where impossible dreams transform into inevitable realities.
             </p>
             
             <div className="grid md:grid-cols-3 gap-8 mb-16">
@@ -431,7 +431,7 @@ export default function HomePage() {
               Ready to <span className="kinetic-text text-orange-400">Connect?</span>
             </h2>
             <p className="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto">
-              We're here to answer your questions and welcome you into our family
+              We're here to answer every question and warmly welcome you into our extraordinary family where excellence meets compassion
             </p>
           </div>
           
@@ -440,7 +440,7 @@ export default function HomePage() {
               {
                 icon: "🏫",
                 title: "Visit Our Campus",
-                info: "RPS School Campus\nKhairekan, Haryana - 125055\nNear Sirsa",
+                info: "RP Sr. Sec. School Campus\nKhairekan, Haryana - 125055\nNear Sirsa",
                 action: "Get Directions"
               },
               {
@@ -480,23 +480,23 @@ export default function HomePage() {
             <div className="md:col-span-2">
               <div className="flex items-center mb-6">
                 <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mr-4 shadow-xl">
-                  <span className="text-white font-bold text-2xl">RPS</span>
+                  <span className="text-white font-bold text-2xl">RP</span>
                 </div>
                 <div>
                   <h3 className="text-xl sm:text-2xl font-bold mb-1">
-                    RPS School <span className="text-orange-400">Khairekan</span>
+                    RP Sr. Sec. School <span className="text-orange-400">Khairekan</span>
                   </h3>
                   <p className="text-gray-400">
-                    Where Every Dream Finds Its Wings
+                    Where Every Dream Finds Its Wings to Soar Beyond Horizons
                   </p>
                 </div>
               </div>
               <p className="text-gray-300 leading-relaxed mb-6">
-                Empowering minds, nurturing hearts, and building the confident leaders of tomorrow's India. 
-                Join our family where tradition meets innovation.
+                              Empowering brilliant minds, nurturing compassionate hearts, and sculpting the visionary leaders who will illuminate tomorrow's India. 
+              Join our extraordinary family where timeless traditions dance with cutting-edge innovation.
               </p>
               <div className="text-orange-300 font-hindi text-lg">
-                जहाँ हर सपना पंख पाता है
+                जहाँ हर सपना पंख पाकर आसमान छूता है
               </div>
             </div>
 
@@ -521,7 +521,7 @@ export default function HomePage() {
                 <div className="flex items-start space-x-3">
                   <FiMapPin className="w-5 h-5 text-orange-400 mt-1" />
                   <div className="text-gray-300">
-                    <p>RPS School Campus</p>
+                    <p>RP Sr. Sec. School Campus</p>
                     <p>Khairekan, Haryana - 125055</p>
                     <p>Near Sirsa</p>
                   </div>
@@ -541,7 +541,7 @@ export default function HomePage() {
           {/* Bottom Bar */}
           <div className="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
             <div className="text-gray-400 mb-4 md:mb-0">
-              © 2025 RPS School Khairekan. All rights reserved.
+              © 2025 RP Sr. Sec. School Khairekan. All rights reserved.
             </div>
             <div className="text-gray-400">
               Made with <span className="text-red-400 animate-pulse">❤️</span> for our students' bright future

@@ -222,9 +222,34 @@
 
   .impact-number {
     @apply font-bold text-transparent bg-clip-text;
-    background-image: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-    font-size: clamp(2rem, 5vw, 4rem);
+    background-image: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+    font-size: clamp(2.5rem, 6vw, 5rem);
     line-height: 1.1;
+    text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0%, 100% {
+      background-image: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+    }
+    50% {
+      background-image: linear-gradient(135deg, #00f2fe 0%, #4facfe 25%, #f093fb 50%, #764ba2 75%, #667eea 100%);
+    }
+  }
+
+  /* Enhanced text rendering for premium quality */
+  .story-card {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  .kinetic-text {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.02em;
   }
 
   /* Responsive adjustments for small screens */

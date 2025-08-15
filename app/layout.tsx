@@ -3,9 +3,9 @@ import type { Metadata } from 'next'
 import React from 'react'
 
 export const metadata: Metadata = {
-  title: 'RPS School Khairekan - Excellence in Education | CBSE Affiliated',
+  title: 'RP Sr. Sec. School Khairekan - Excellence in Education | CBSE Affiliated',
   description: 'Leading CBSE affiliated school in Khairekan providing quality education, character building and holistic development. Admissions open for 2026-27.',
-  keywords: 'RPS School, Khairekan, CBSE school, Indian education, admissions, quality education, character building, holistic development',
+  keywords: 'RP Sr. Sec. School, Khairekan, CBSE school, Indian education, admissions, quality education, character building, holistic development',
 }
 
 export default function RootLayout({

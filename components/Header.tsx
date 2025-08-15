@@ -53,11 +53,11 @@ export default function Header() {
             <div className="flex items-center space-x-4">
               <div className="flex items-center">
                 <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mr-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-                  <span className="text-white font-bold text-xl">RPS</span>
+                  <span className="text-white font-bold text-xl">RP</span>
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
-                    {language === 'en' ? 'RPS School Khairekan' : 'आरपीएस स्कूल खैरेकान'}
+                    {language === 'en' ? 'RP Sr. Sec. School Khairekan' : 'आरपी सीनियर सेकेंडरी स्कूल खैरेकान'}
                   </h1>
                   <p className="text-sm text-slate-600 font-medium">
                     {language === 'en' ? 'CBSE Affiliated • Excellence in Education' : 'सीबीएसई संबद्ध • शिक्षा में उत्कृष्टता'}
