@@ -228,10 +228,13 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
-    font-size: clamp(2.5rem, 8vw, 5rem);
-    line-height: 1.2;
+    font-size: clamp(1.8rem, 5vw, 4rem);
+    line-height: 1.1;
     animation: gradientShift 4s ease-in-out infinite;
     display: inline-block;
+    max-width: 100%;
+    overflow: visible;
+    word-break: keep-all;
   }
 
   @keyframes gradientShift {
@@ -277,15 +280,22 @@
     }
     
     .impact-number {
-      font-size: clamp(2rem, 12vw, 3.5rem) !important;
-      line-height: 1.1 !important;
+      font-size: clamp(1.5rem, 8vw, 2.5rem) !important;
+      line-height: 1.0 !important;
     }
   }
 
   /* Medium screens optimization */
   @media (min-width: 641px) and (max-width: 1024px) {
     .impact-number {
-      font-size: clamp(3rem, 6vw, 4rem) !important;
+      font-size: clamp(2rem, 4vw, 3rem) !important;
+    }
+  }
+
+  /* Large screens optimization */
+  @media (min-width: 1025px) and (max-width: 1366px) {
+    .impact-number {
+      font-size: clamp(2.5rem, 4vw, 3.5rem) !important;
     }
   }
 } 
