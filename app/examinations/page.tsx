@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import Header from '../../components/Header'
 import AdminUploadModal from '../../components/AdminUploadModal'
-import { FiBook, FiFileText, FiDownload, FiUpload, FiChevronRight, FiClock, FiUsers, FiAward, FiPlay, FiCheck, FiEdit, FiUser } from 'react-icons/fi'
+import { FiBook, FiFileText, FiDownload, FiUpload, FiChevronRight, FiClock, FiUsers, FiAward, FiPlay, FiCheck, FiEdit, FiUser, FiTrash2 } from 'react-icons/fi'
 
 interface QuizQuestion {
   id: number
@@ -1433,6 +1433,38 @@ export default function ExaminationPortal() {
     }
   }
 
+  const handleResourceDelete = async (resource: any) => {
+    if (!user || user.role !== 'admin') {
+      alert('Only admins can delete resources')
+      return
+    }
+
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete "${resource.title}"? This action cannot be undone.`
+    )
+
+    if (!confirmDelete) return
+
+    try {
+      const response = await fetch(`/api/resources/${resource.id}`, {
+        method: 'DELETE'
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        alert('Resource deleted successfully!')
+        // Refresh the classes data to remove the deleted resource
+        fetchClasses()
+      } else {
+        alert(data.error || 'Failed to delete resource')
+      }
+    } catch (error) {
+      console.error('Delete error:', error)
+      alert('Failed to delete resource')
+    }
+  }
+
   const getFileExtension = (dataUrl: string) => {
     // Extract file type from data URL
     const mimeType = dataUrl.split(',')[0].split(':')[1].split(';')[0]
@@ -1973,6 +2005,14 @@ export default function ExaminationPortal() {
                             <FiDownload className="mr-1" />
                             Download
                           </button>
+                          {user && user.role === 'admin' && (
+                            <button 
+                              onClick={() => handleResourceDelete(resource)}
+                              className="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 transition-colors flex items-center text-sm">
+                              <FiTrash2 className="mr-1" />
+                              Delete
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -2013,6 +2053,14 @@ export default function ExaminationPortal() {
                             <FiDownload className="mr-1" />
                             Download
                           </button>
+                          {user && user.role === 'admin' && (
+                            <button 
+                              onClick={() => handleResourceDelete(resource)}
+                              className="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 transition-colors flex items-center text-sm">
+                              <FiTrash2 className="mr-1" />
+                              Delete
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -2059,13 +2107,23 @@ export default function ExaminationPortal() {
                           <p>By {resource.uploadedBy}</p>
                           <p>{new Date(resource.uploadDate).toLocaleDateString()}</p>
                         </div>
-                        <button 
-                          onClick={() => resource.quiz && handleQuizStart(resource.quiz)}
-                          className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors flex items-center text-sm"
-                        >
-                          <FiPlay className="mr-2" />
-                          Start Quiz
-                        </button>
+                        <div className="flex space-x-2">
+                          <button 
+                            onClick={() => resource.quiz && handleQuizStart(resource.quiz)}
+                            className="bg-purple-500 text-white px-3 py-2 rounded-lg hover:bg-purple-600 transition-colors flex items-center text-sm"
+                          >
+                            <FiPlay className="mr-1" />
+                            Start Quiz
+                          </button>
+                          {user && user.role === 'admin' && (
+                            <button 
+                              onClick={() => handleResourceDelete(resource)}
+                              className="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 transition-colors flex items-center text-sm">
+                              <FiTrash2 className="mr-1" />
+                              Delete
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))}
