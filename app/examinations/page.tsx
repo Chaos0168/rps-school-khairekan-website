@@ -56,7 +56,7 @@ interface Class {
   terms: Term[]
 }
 
-// Mock data
+// Mock data - will be replaced with real API data
 const mockClasses: Class[] = [
   {
     id: 1,
@@ -1259,6 +1259,8 @@ const mockClasses: Class[] = [
 ]
 
 export default function ExaminationPortal() {
+  const [classes, setClasses] = useState<Class[]>([])
+  const [loading, setLoading] = useState(true)
   const [selectedClass, setSelectedClass] = useState<Class | null>(null)
   const [selectedTerm, setSelectedTerm] = useState<Term | null>(null)
   const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null)
@@ -1269,6 +1271,68 @@ export default function ExaminationPortal() {
   const [showResults, setShowResults] = useState(false)
   const [user, setUser] = useState<null | { id: string; name: string; email: string; role: 'admin' | 'student' }>(null)
   const [showUploadModal, setShowUploadModal] = useState(false)
+
+  // Fetch classes data from API
+  useEffect(() => {
+    fetchClasses()
+  }, [])
+
+  const fetchClasses = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('/api/classes')
+      const data = await response.json()
+      
+      if (data.success) {
+        // Transform the data to match the expected format
+        const transformedClasses = data.classes.map((cls: any) => ({
+          id: cls.id,
+          name: cls.name,
+          description: cls.description || '',
+          terms: cls.terms.map((term: any) => ({
+            id: term.id,
+            name: term.name,
+            subjects: term.subjects.map((subject: any) => ({
+              id: subject.id,
+              name: subject.name,
+              code: subject.code,
+              resources: subject.resources.map((resource: any) => ({
+                id: resource.id,
+                title: resource.title,
+                type: resource.type.toLowerCase(),
+                description: resource.description || '',
+                fileUrl: resource.fileUrl,
+                uploadDate: resource.createdAt,
+                uploadedBy: resource.uploadedBy?.name || 'Unknown',
+                quiz: resource.quiz ? {
+                  id: resource.quiz.id,
+                  title: resource.title,
+                  description: resource.description || '',
+                  duration: resource.quiz.duration,
+                  totalQuestions: resource.quiz.questions?.length || 0,
+                  questions: resource.quiz.questions?.map((q: any) => ({
+                    id: q.id,
+                    question: q.text,
+                    options: [q.option1, q.option2, q.option3, q.option4],
+                    correctAnswer: q.correctAnswer - 1, // Convert 1-based to 0-based
+                    explanation: q.explanation
+                  })) || [],
+                  difficulty: resource.quiz.difficulty?.toLowerCase() || 'medium'
+                } : undefined
+              }))
+            }))
+          }))
+        }))
+        setClasses(transformedClasses)
+      }
+    } catch (error) {
+      console.error('Failed to fetch classes:', error)
+      // Fallback to empty array if API fails
+      setClasses([])
+    } finally {
+      setLoading(false)
+    }
+  }
 
   // Check for logged in user
   useEffect(() => {
@@ -1324,10 +1388,9 @@ export default function ExaminationPortal() {
   }
 
   const handleResourceUpload = (resourceData: any) => {
-    // In a real app, this would make an API call to save the resource
-    console.log('Uploading resource:', resourceData)
-    // For demo purposes, we'll just log it
-    alert('Resource uploaded successfully! (This is a demo - no actual file was uploaded)')
+    // Refresh the classes data to include the new resource
+    fetchClasses()
+    setShowUploadModal(false)
   }
 
   // Quiz Interface
@@ -1628,8 +1691,16 @@ export default function ExaminationPortal() {
           </div>
         )}
 
+        {/* Loading State */}
+        {loading && (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading classes...</p>
+          </div>
+        )}
+
         {/* Class Selection */}
-        {!selectedClass && (
+        {!loading && !selectedClass && (
           <div>
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8">Select Your Class</h2>
             
@@ -1640,7 +1711,7 @@ export default function ExaminationPortal() {
                 Pre-Primary Classes
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {mockClasses.filter(cls => ['Nursery', 'LKG', 'UKG'].includes(cls.name)).map((classItem) => (
+                {classes.filter(cls => ['Nursery', 'LKG', 'UKG'].includes(cls.name)).map((classItem) => (
                                       <div
                       key={classItem.id}
                       onClick={() => setSelectedClass(classItem)}
@@ -1667,7 +1738,7 @@ export default function ExaminationPortal() {
                 Primary Classes (I - V)
               </h3>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mockClasses.filter(cls => ['Class I', 'Class II', 'Class III', 'Class IV', 'Class V'].includes(cls.name)).map((classItem) => (
+                {classes.filter(cls => ['Class I', 'Class II', 'Class III', 'Class IV', 'Class V'].includes(cls.name)).map((classItem) => (
                   <div
                     key={classItem.id}
                     onClick={() => setSelectedClass(classItem)}
@@ -1694,7 +1765,7 @@ export default function ExaminationPortal() {
                 Middle School (VI - VIII)
               </h3>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mockClasses.filter(cls => ['Class VI', 'Class VII', 'Class VIII'].includes(cls.name)).map((classItem) => (
+                {classes.filter(cls => ['Class VI', 'Class VII', 'Class VIII'].includes(cls.name)).map((classItem) => (
                   <div
                     key={classItem.id}
                     onClick={() => setSelectedClass(classItem)}
@@ -1721,7 +1792,7 @@ export default function ExaminationPortal() {
                 Secondary & Senior Secondary (IX - XII)
               </h3>
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {mockClasses.filter(cls => ['Class IX', 'Class X', 'Class XI', 'Class XII'].includes(cls.name)).map((classItem) => (
+                {classes.filter(cls => ['Class IX', 'Class X', 'Class XI', 'Class XII'].includes(cls.name)).map((classItem) => (
                   <div
                     key={classItem.id}
                     onClick={() => setSelectedClass(classItem)}

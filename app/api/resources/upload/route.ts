@@ -9,14 +9,13 @@ export async function POST(request: NextRequest) {
     const title = formData.get('title') as string
     const description = formData.get('description') as string
     const type = formData.get('type') as 'SYLLABUS' | 'QUESTION_PAPER' | 'QUIZ'
-    const subjectIdStr = formData.get('subjectId') as string
-    const subjectId = parseInt(subjectIdStr)
+    const subjectId = formData.get('subjectId') as string
     const uploadedById = formData.get('uploadedById') as string
     const file = formData.get('file') as File | null
 
-    if (!title || !type || !subjectIdStr || !uploadedById || isNaN(subjectId)) {
+    if (!title || !type || !subjectId || !uploadedById) {
       return NextResponse.json(
-        { error: 'Missing required fields or invalid subjectId' },
+        { error: 'Missing required fields' },
         { status: 400 }
       )
     }
