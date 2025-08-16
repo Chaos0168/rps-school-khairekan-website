@@ -9,13 +9,26 @@ export async function POST(request: NextRequest) {
     const title = formData.get('title') as string
     const description = formData.get('description') as string
     const type = formData.get('type') as 'SYLLABUS' | 'QUESTION_PAPER' | 'QUIZ'
-    const subjectId = formData.get('subjectId') as string
+    const subjectIdStr = formData.get('subjectId') as string
+    const subjectId = parseInt(subjectIdStr)
     const uploadedById = formData.get('uploadedById') as string
     const file = formData.get('file') as File | null
 
-    if (!title || !type || !subjectId || !uploadedById) {
+    if (!title || !type || !subjectIdStr || !uploadedById || isNaN(subjectId)) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Missing required fields or invalid subjectId' },
+        { status: 400 }
+      )
+    }
+
+    // Validate that the subjectId exists in the database
+    const subjectExists = await prisma.subject.findUnique({
+      where: { id: subjectId }
+    })
+
+    if (!subjectExists) {
+      return NextResponse.json(
+        { error: `Subject with ID ${subjectId} not found. Please refresh the page and try again.` },
         { status: 400 }
       )
     }

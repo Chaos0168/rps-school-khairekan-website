@@ -1,34 +1,40 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { prisma } from '../../../lib/prisma'
 
 export async function GET() {
   try {
     const classes = await prisma.class.findMany({
-      orderBy: { order: 'asc' },
       include: {
         terms: {
-          orderBy: { order: 'asc' },
           include: {
             subjects: {
               include: {
                 resources: {
-                  where: { isPublished: true },
                   include: {
-                    quiz: true
+                    uploadedBy: {
+                      select: {
+                        name: true,
+                        email: true
+                      }
+                    },
+                    quiz: {
+                      include: {
+                        questions: true
+                      }
+                    }
                   }
                 }
               }
             }
           }
         }
+      },
+      orderBy: {
+        id: 'asc'
       }
     })
 
-    return NextResponse.json({
-      success: true,
-      classes
-    })
-
+    return NextResponse.json({ success: true, classes })
   } catch (error) {
     console.error('Classes fetch error:', error)
     return NextResponse.json(
