@@ -4,8 +4,9 @@
   "description": "Demo website for Indian school with cultural elements",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
+    "postinstall": "prisma generate",
     "lint": "next lint",
     "export": "next build && next export",
     "db:generate": "prisma generate",
