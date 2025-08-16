@@ -74,33 +74,39 @@ export default function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps
     setError('')
 
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          email: formData.email, 
+          password: formData.password 
+        }),
+      })
 
-      // Find user in mock database
-      const user = mockUsers.find(u => 
-        u.email.toLowerCase() === formData.email.toLowerCase() && 
-        u.password === formData.password &&
-        u.role === loginType
-      )
+      const data = await response.json()
 
-      if (user) {
-        // Success
-        onLogin({
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role
-        })
+      if (data.success) {
+        // Map database role to frontend role
+        const userData = {
+          id: data.user.id,
+          name: data.user.name,
+          email: data.user.email,
+          role: data.user.role === 'ADMIN' || data.user.role === 'TEACHER' ? 'admin' as const : 'student' as const
+        }
+        
+        onLogin(userData)
         
         // Reset form
         setFormData({ email: '', password: '', rememberMe: false })
         onClose()
       } else {
-        setError('Invalid email or password. Please check your credentials.')
+        setError(data.error || 'Invalid credentials')
       }
     } catch (err) {
-      setError('Login failed. Please try again.')
+      console.error('Login error:', err)
+      setError('Network error. Please try again.')
     } finally {
       setIsLoading(false)
     }

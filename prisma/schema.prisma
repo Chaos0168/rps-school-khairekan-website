@@ -1,0 +1,197 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  name        String
+  password    String
+  role        UserRole @default(STUDENT)
+  classId     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  class       Class?   @relation(fields: [classId], references: [id])
+  uploads     Resource[]
+  quizAttempts QuizAttempt[]
+  
+  @@map("users")
+}
+
+model Class {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  order       Int      @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  terms       Term[]
+  users       User[]
+  
+  @@map("classes")
+}
+
+model Term {
+  id          String   @id @default(cuid())
+  name        String
+  classId     String
+  order       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  class       Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  subjects    Subject[]
+  
+  @@unique([classId, name])
+  @@map("terms")
+}
+
+model Subject {
+  id          String   @id @default(cuid())
+  name        String
+  code        String
+  termId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  term        Term     @relation(fields: [termId], references: [id], onDelete: Cascade)
+  resources   Resource[]
+  
+  @@unique([termId, code])
+  @@map("subjects")
+}
+
+model Resource {
+  id          String      @id @default(cuid())
+  title       String
+  description String?
+  type        ResourceType
+  subjectId   String
+  uploadedById String
+  fileUrl     String?
+  fileName    String?
+  fileSize    Int?
+  fileType    String?
+  isPublished Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+  // Relations
+  subject     Subject     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  uploadedBy  User        @relation(fields: [uploadedById], references: [id])
+  quiz        Quiz?
+  
+  @@map("resources")
+}
+
+model Quiz {
+  id          String   @id @default(cuid())
+  resourceId  String   @unique
+  duration    Int      // in minutes
+  difficulty  Difficulty
+  totalMarks  Int      @default(0)
+  passingMarks Int     @default(0)
+  instructions String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  resource    Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  questions   Question[]
+  attempts    QuizAttempt[]
+  
+  @@map("quizzes")
+}
+
+model Question {
+  id          String   @id @default(cuid())
+  quizId      String
+  text        String
+  option1     String
+  option2     String
+  option3     String
+  option4     String
+  correctAnswer Int    // 1, 2, 3, or 4
+  explanation String?
+  marks       Int      @default(1)
+  order       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  answers     Answer[]
+  
+  @@map("questions")
+}
+
+model QuizAttempt {
+  id          String   @id @default(cuid())
+  userId      String
+  quizId      String
+  score       Int?
+  totalMarks  Int
+  percentage  Float?
+  timeSpent   Int?     // in seconds
+  isCompleted Boolean  @default(false)
+  startedAt   DateTime @default(now())
+  completedAt DateTime?
+  
+  // Relations
+  user        User     @relation(fields: [userId], references: [id])
+  quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  answers     Answer[]
+  
+  @@map("quiz_attempts")
+}
+
+model Answer {
+  id              String   @id @default(cuid())
+  questionId      String
+  quizAttemptId   String
+  selectedAnswer  Int?     // 1, 2, 3, or 4
+  isCorrect       Boolean?
+  marksAwarded    Int      @default(0)
+  timeSpent       Int?     // in seconds
+  createdAt       DateTime @default(now())
+  
+  // Relations
+  question        Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  quizAttempt     QuizAttempt @relation(fields: [quizAttemptId], references: [id], onDelete: Cascade)
+  
+  @@unique([questionId, quizAttemptId])
+  @@map("answers")
+}
+
+enum UserRole {
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
+enum ResourceType {
+  SYLLABUS
+  QUESTION_PAPER
+  QUIZ
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
