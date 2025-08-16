@@ -97,11 +97,11 @@ export default function AdminUploadModal({
       setQuizData(prev => ({
         ...prev,
         questions: prev.questions.filter((_, i) => i !== index)
-      }))
+            }))
     }
   }
 
-    const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     try {
@@ -180,14 +180,14 @@ export default function AdminUploadModal({
           ]
         })
         
-        onClose()
+        onClose();
       } else {
         alert(data.error || 'Upload failed. Please try again.')
       }
       
     } catch (error) {
       console.error('Upload error:', error)
-      alert('Upload failed. Please try again.')
+      alert('Upload failed. Please try again.');
     }
   }
 
