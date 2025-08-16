@@ -1,19 +1,48 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { FiMenu, FiX, FiPhone, FiMail, FiMapPin, FiClock } from 'react-icons/fi'
+import { FiMenu, FiX, FiPhone, FiMail, FiMapPin, FiClock, FiUser, FiLogOut } from 'react-icons/fi'
 import { BiGlobe } from 'react-icons/bi'
+import LoginModal from './LoginModal'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [language, setLanguage] = useState('en')
-  const [currentTime, setCurrentTime] = useState(new Date())
+  const [currentTime, setCurrentTime] = useState<Date | null>(null)
+  const [showLoginModal, setShowLoginModal] = useState(false)
+  const [user, setUser] = useState<null | { id: string; name: string; email: string; role: 'admin' | 'student' }>(null)
 
   const toggleLanguage = () => {
     setLanguage(language === 'en' ? 'hi' : 'en')
   }
 
+  const handleLogin = (userData: { id: string; name: string; email: string; role: 'admin' | 'student' }) => {
+    setUser(userData)
+    // Store in localStorage for persistence
+    localStorage.setItem('user', JSON.stringify(userData))
+  }
+
+  const handleLogout = () => {
+    setUser(null)
+    localStorage.removeItem('user')
+  }
+
+  // Check for stored user on component mount
   useEffect(() => {
+    const storedUser = localStorage.getItem('user')
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser))
+      } catch (error) {
+        localStorage.removeItem('user')
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    // Set initial time only on client side
+    setCurrentTime(new Date())
+    
     const timer = setInterval(() => {
       setCurrentTime(new Date())
     }, 1000)
@@ -21,7 +50,8 @@ export default function Header() {
     return () => clearInterval(timer)
   }, [])
 
-  const formatTime = (date: Date) => {
+  const formatTime = (date: Date | null) => {
+    if (!date) return '--:--:--'
     return date.toLocaleTimeString('en-IN', {
       hour: '2-digit',
       minute: '2-digit',
@@ -30,7 +60,8 @@ export default function Header() {
     })
   }
 
-  const formatDate = (date: Date) => {
+  const formatDate = (date: Date | null) => {
+    if (!date) return '---'
     return date.toLocaleDateString('en-IN', {
       weekday: 'short',
       day: 'numeric',
@@ -105,16 +136,17 @@ export default function Header() {
               {/* Desktop Navigation - shows on medium+ screens */}
               <nav className="hidden lg:flex items-center space-x-1">
                 {[
-                  { en: 'Home', hi: 'मुख्य' },
-                  { en: 'About', hi: 'के बारे में' },
-                  { en: 'Academics', hi: 'शैक्षणिक' },
-                  { en: 'Notices', hi: 'सूचनाएं' },
-                  { en: 'News', hi: 'समाचार' },
-                  { en: 'Gallery', hi: 'गैलरी' },
+                  { en: 'Home', hi: 'मुख्य', href: '/' },
+                  { en: 'About', hi: 'के बारे में', href: '#' },
+                  { en: 'Academics', hi: 'शैक्षणिक', href: '#' },
+                  { en: 'Examinations', hi: 'परीक्षा', href: '/examinations' },
+                  { en: 'Notices', hi: 'सूचनाएं', href: '#' },
+                  { en: 'News', hi: 'समाचार', href: '#' },
+                  { en: 'Gallery', hi: 'गैलरी', href: '#' },
                 ].map((item, index) => (
                   <a 
                     key={index}
-                    href="#" 
+                    href={item.href} 
                     className="text-slate-700 hover:text-orange-500 font-medium transition-all duration-300 px-2 py-2 rounded-lg hover:bg-orange-50 text-sm whitespace-nowrap"
                   >
                     {language === 'en' ? item.en : item.hi}
@@ -122,7 +154,32 @@ export default function Header() {
                 ))}
               </nav>
               
-              {/* Admission Button - always visible */}
+              {/* Login/User Button */}
+              {user ? (
+                <div className="flex items-center space-x-2">
+                  <div className="hidden sm:block text-right">
+                    <p className="text-xs font-semibold text-gray-700">{user.name}</p>
+                    <p className="text-xs text-gray-500 capitalize">{user.role}</p>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition-colors flex items-center"
+                    title="Logout"
+                  >
+                    <FiLogOut className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowLoginModal(true)}
+                  className="bg-blue-500 text-white px-3 py-2 rounded-lg font-semibold transition-all duration-300 hover:bg-blue-600 text-xs whitespace-nowrap flex-shrink-0 flex items-center"
+                >
+                  <FiUser className="mr-1" />
+                  {language === 'en' ? 'Login' : 'लॉगिन'}
+                </button>
+              )}
+
+              {/* Admission Button */}
               <button className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-2 sm:px-3 py-2 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg text-xs whitespace-nowrap flex-shrink-0">
                 {language === 'en' ? 'Admission' : 'प्रवेश'}
               </button>
@@ -148,31 +205,70 @@ export default function Header() {
             <div className="lg:hidden bg-white border-t border-gray-100 py-4 overflow-hidden">
               <nav className="flex flex-col space-y-2">
                 {[
-                  { en: 'Home', hi: 'मुख्य' },
-                  { en: 'About', hi: 'के बारे में' },
-                  { en: 'Academics', hi: 'शैक्षणिक' },
-                  { en: 'Notices', hi: 'सूचनाएं' },
-                  { en: 'News', hi: 'समाचार' },
-                  { en: 'Gallery', hi: 'गैलरी' },
+                  { en: 'Home', hi: 'मुख्य', href: '/' },
+                  { en: 'About', hi: 'के बारे में', href: '#' },
+                  { en: 'Academics', hi: 'शैक्षणिक', href: '#' },
+                  { en: 'Examinations', hi: 'परीक्षा', href: '/examinations' },
+                  { en: 'Notices', hi: 'सूचनाएं', href: '#' },
+                  { en: 'News', hi: 'समाचार', href: '#' },
+                  { en: 'Gallery', hi: 'गैलरी', href: '#' },
                 ].map((item, index) => (
                   <a 
                     key={index}
-                    href="#" 
+                    href={item.href} 
                     className="text-slate-700 hover:text-slate-900 font-medium transition-colors duration-200 px-4 py-3 rounded-lg hover:bg-slate-50"
                   >
                     {language === 'en' ? item.en : item.hi}
                   </a>
                 ))}
-                <div className="pt-2">
-                  <button className="btn-primary w-full">
-                    {language === 'en' ? 'Admission Open 2026-27' : 'प्रवेश खुला 2026-27'}
-                  </button>
+                
+                {/* Mobile Login/User Section */}
+                <div className="pt-2 space-y-3 border-t border-gray-100 mt-2">
+                  {user ? (
+                    <div className="space-y-3 px-4">
+                      <div className="bg-gray-50 p-3 rounded-lg">
+                        <p className="font-semibold text-gray-800 text-sm">{user.name}</p>
+                        <p className="text-xs text-gray-600 capitalize">{user.role}</p>
+                      </div>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full bg-red-500 text-white py-2 px-4 rounded-lg font-medium transition-all duration-300 hover:bg-red-600 flex items-center justify-center text-sm"
+                      >
+                        <FiLogOut className="mr-2 w-4 h-4" />
+                        {language === 'en' ? 'Logout' : 'लॉगआउट'}
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setShowLoginModal(true)
+                        setIsMenuOpen(false) // Close mobile menu when opening login
+                      }}
+                      className="w-full mx-4 bg-blue-500 text-white py-2 px-4 rounded-lg font-medium transition-all duration-300 hover:bg-blue-600 flex items-center justify-center text-sm"
+                    >
+                      <FiUser className="mr-2 w-4 h-4" />
+                      {language === 'en' ? 'Login' : 'लॉगिन'}
+                    </button>
+                  )}
+                  
+                  <div className="px-4">
+                    <button className="btn-primary w-full text-sm py-2">
+                      {language === 'en' ? 'Admission Open 2026-27' : 'प्रवेश खुला 2026-27'}
+                    </button>
+                  </div>
                 </div>
               </nav>
             </div>
           )}
         </div>
       </header>
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onLogin={handleLogin}
+      />
     </>
   )
 } 
