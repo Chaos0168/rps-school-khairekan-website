@@ -1,6 +1,4 @@
-import fs from 'fs'
 import path from 'path'
-import { writeFile } from 'fs/promises'
 
 export interface UploadResult {
   success: boolean
@@ -12,29 +10,25 @@ export interface UploadResult {
 
 export async function saveFile(file: File, uploadDir: string = 'uploads'): Promise<UploadResult> {
   try {
-    // Create upload directory if it doesn't exist
-    const uploadsPath = path.join(process.cwd(), 'public', uploadDir)
-    if (!fs.existsSync(uploadsPath)) {
-      fs.mkdirSync(uploadsPath, { recursive: true })
-    }
+    // For Vercel deployment, we'll store file content as base64 data URL
+    // This is a temporary solution - for production, use cloud storage like AWS S3, Cloudinary, etc.
+    
+    // Convert File to base64
+    const bytes = await file.arrayBuffer()
+    const buffer = Buffer.from(bytes)
+    const base64 = buffer.toString('base64')
+    const mimeType = file.type
+    const dataUrl = `data:${mimeType};base64,${base64}`
 
-    // Generate unique filename
+    // Generate unique filename for reference
     const timestamp = Date.now()
     const randomString = Math.random().toString(36).substring(2, 15)
     const fileExtension = path.extname(file.name)
     const fileName = `${timestamp}_${randomString}${fileExtension}`
-    const filePath = path.join(uploadsPath, fileName)
-
-    // Convert File to Buffer
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-
-    // Write file to disk
-    await writeFile(filePath, buffer)
 
     return {
       success: true,
-      fileUrl: `/${uploadDir}/${fileName}`,
+      fileUrl: dataUrl, // Store as data URL for now
       fileName: file.name,
       fileSize: file.size
     }
@@ -71,12 +65,10 @@ export function validateFile(file: File): { valid: boolean; error?: string } {
 
 export function deleteFile(fileUrl: string): boolean {
   try {
-    const filePath = path.join(process.cwd(), 'public', fileUrl)
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath)
-      return true
-    }
-    return false
+    // For data URLs stored in database, deletion is handled at the database level
+    // For cloud storage, this would delete from the cloud service
+    // Currently returning true as files are stored as data URLs in database
+    return true
   } catch (error) {
     console.error('File deletion error:', error)
     return false
