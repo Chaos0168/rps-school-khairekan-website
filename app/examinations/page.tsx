@@ -1450,14 +1450,18 @@ export default function ExaminationPortal() {
         method: 'DELETE'
       })
 
-      const data = await response.json()
-
-      if (data.success) {
-        alert('Resource deleted successfully!')
-        // Refresh the classes data to remove the deleted resource
-        fetchClasses()
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success) {
+          alert('Resource deleted successfully!')
+          // Refresh the classes data to remove the deleted resource
+          await fetchClasses()
+        } else {
+          alert(data.error || 'Failed to delete resource')
+        }
       } else {
-        alert(data.error || 'Failed to delete resource')
+        const errorData = await response.json()
+        alert(errorData.error || 'Failed to delete resource')
       }
     } catch (error) {
       console.error('Delete error:', error)
