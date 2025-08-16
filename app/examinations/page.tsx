@@ -1393,6 +1393,59 @@ export default function ExaminationPortal() {
     setShowUploadModal(false)
   }
 
+  const handleFileDownload = (resource: any) => {
+    if (!resource.fileUrl) {
+      alert('No file available for download')
+      return
+    }
+
+    try {
+      // For data URLs (base64), create a downloadable link
+      if (resource.fileUrl.startsWith('data:')) {
+        const link = document.createElement('a')
+        link.href = resource.fileUrl
+        link.download = `${resource.title}.${getFileExtension(resource.fileUrl)}`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+      } else {
+        // For regular URLs, open in new tab
+        window.open(resource.fileUrl, '_blank')
+      }
+    } catch (error) {
+      console.error('Download error:', error)
+      alert('Failed to download file')
+    }
+  }
+
+  const handleFileView = (resource: any) => {
+    if (!resource.fileUrl) {
+      alert('No file available for viewing')
+      return
+    }
+
+    try {
+      // Open the file in a new tab for viewing
+      window.open(resource.fileUrl, '_blank')
+    } catch (error) {
+      console.error('View error:', error)
+      alert('Failed to view file')
+    }
+  }
+
+  const getFileExtension = (dataUrl: string) => {
+    // Extract file type from data URL
+    const mimeType = dataUrl.split(',')[0].split(':')[1].split(';')[0]
+    switch (mimeType) {
+      case 'application/pdf': return 'pdf'
+      case 'application/msword': return 'doc'
+      case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': return 'docx'
+      case 'image/jpeg': return 'jpg'
+      case 'image/png': return 'png'
+      default: return 'file'
+    }
+  }
+
   // Quiz Interface
   if (activeQuiz && !showResults) {
     const question = activeQuiz.questions[currentQuestion]
@@ -1907,10 +1960,20 @@ export default function ExaminationPortal() {
                           <p>By {resource.uploadedBy}</p>
                           <p>{new Date(resource.uploadDate).toLocaleDateString()}</p>
                         </div>
-                        <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center text-sm">
-                          <FiDownload className="mr-2" />
-                          Download
-                        </button>
+                        <div className="flex space-x-2">
+                          <button 
+                            onClick={() => handleFileView(resource)}
+                            className="bg-gray-500 text-white px-3 py-2 rounded-lg hover:bg-gray-600 transition-colors flex items-center text-sm">
+                            <FiFileText className="mr-1" />
+                            View
+                          </button>
+                          <button 
+                            onClick={() => handleFileDownload(resource)}
+                            className="bg-blue-500 text-white px-3 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center text-sm">
+                            <FiDownload className="mr-1" />
+                            Download
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -1937,10 +2000,20 @@ export default function ExaminationPortal() {
                           <p>By {resource.uploadedBy}</p>
                           <p>{new Date(resource.uploadDate).toLocaleDateString()}</p>
                         </div>
-                        <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center text-sm">
-                          <FiDownload className="mr-2" />
-                          Download
-                        </button>
+                        <div className="flex space-x-2">
+                          <button 
+                            onClick={() => handleFileView(resource)}
+                            className="bg-gray-500 text-white px-3 py-2 rounded-lg hover:bg-gray-600 transition-colors flex items-center text-sm">
+                            <FiFileText className="mr-1" />
+                            View
+                          </button>
+                          <button 
+                            onClick={() => handleFileDownload(resource)}
+                            className="bg-green-500 text-white px-3 py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center text-sm">
+                            <FiDownload className="mr-1" />
+                            Download
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
