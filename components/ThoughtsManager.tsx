@@ -57,12 +57,14 @@ export default function ThoughtsManager({ userId }: ThoughtsManagerProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    if (editingThought) {
+      alert('Edit functionality coming soon!')
+      return
+    }
+    
     try {
-      const url = editingThought ? `/api/admin/thoughts/${editingThought.id}` : '/api/admin/thoughts'
-      const method = editingThought ? 'PUT' : 'POST'
-      
-      const response = await fetch(url, {
-        method,
+      const response = await fetch('/api/admin/thoughts', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
@@ -83,51 +85,15 @@ export default function ThoughtsManager({ userId }: ThoughtsManagerProps) {
   }
 
   const handleEdit = (thought: ThoughtOfTheDay) => {
-    setEditingThought(thought)
-    setFormData({
-      quote: thought.quote,
-      author: thought.author,
-      hindiQuote: thought.hindiQuote || '',
-      hindiAuthor: thought.hindiAuthor || '',
-      isActive: thought.isActive,
-      date: thought.date.split('T')[0]
-    })
-    setShowModal(true)
+    alert('Edit functionality coming soon!')
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this thought?')) return
-
-    try {
-      const response = await fetch(`/api/admin/thoughts/${id}`, {
-        method: 'DELETE'
-      })
-
-      if (response.ok) {
-        await loadThoughts()
-      }
-    } catch (error) {
-      console.error('Error deleting thought:', error)
-    }
+    alert('Delete functionality coming soon!')
   }
 
   const toggleActive = async (thought: ThoughtOfTheDay) => {
-    try {
-      const response = await fetch(`/api/admin/thoughts/${thought.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...thought,
-          isActive: !thought.isActive
-        })
-      })
-
-      if (response.ok) {
-        await loadThoughts()
-      }
-    } catch (error) {
-      console.error('Error toggling thought status:', error)
-    }
+    alert('Toggle functionality coming soon!')
   }
 
   const resetForm = () => {

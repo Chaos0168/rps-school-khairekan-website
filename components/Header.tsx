@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { FiMenu, FiX, FiPhone, FiMail, FiMapPin, FiClock, FiUser, FiLogOut } from 'react-icons/fi'
+import { FiMenu, FiX, FiPhone, FiMail, FiMapPin, FiClock, FiUser, FiLogOut, FiSettings } from 'react-icons/fi'
 import { BiGlobe } from 'react-icons/bi'
 import LoginModal from './LoginModal'
 
@@ -161,6 +161,15 @@ export default function Header() {
                     <p className="text-xs font-semibold text-gray-700">{user.name}</p>
                     <p className="text-xs text-gray-500 capitalize">{user.role}</p>
                   </div>
+                  {user.role === 'admin' && (
+                    <button
+                      onClick={() => window.location.href = '/admin'}
+                      className="bg-orange-500 text-white p-2 rounded-lg hover:bg-orange-600 transition-colors flex items-center"
+                      title="Admin Panel"
+                    >
+                      <FiSettings className="w-4 h-4" />
+                    </button>
+                  )}
                   <button
                     onClick={handleLogout}
                     className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition-colors flex items-center"
@@ -230,6 +239,15 @@ export default function Header() {
                         <p className="font-semibold text-gray-800 text-sm">{user.name}</p>
                         <p className="text-xs text-gray-600 capitalize">{user.role}</p>
                       </div>
+                      {user.role === 'admin' && (
+                        <button
+                          onClick={() => window.location.href = '/admin'}
+                          className="w-full bg-orange-500 text-white py-2 px-4 rounded-lg font-medium transition-all duration-300 hover:bg-orange-600 flex items-center justify-center text-sm mb-2"
+                        >
+                          <FiSettings className="mr-2 w-4 h-4" />
+                          {language === 'en' ? 'Admin Panel' : 'एडमिन पैनल'}
+                        </button>
+                      )}
                       <button
                         onClick={handleLogout}
                         className="w-full bg-red-500 text-white py-2 px-4 rounded-lg font-medium transition-all duration-300 hover:bg-red-600 flex items-center justify-center text-sm"

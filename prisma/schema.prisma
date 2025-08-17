@@ -24,6 +24,10 @@ model User {
   class       Class?   @relation(fields: [classId], references: [id])
   uploads     Resource[]
   quizAttempts QuizAttempt[]
+  notices     Notice[]
+  news        News[]
+  thoughts    ThoughtOfTheDay[]
+  settingsUpdates SchoolSettings[]
   
   @@map("users")
 }
@@ -194,4 +198,74 @@ enum Difficulty {
   EASY
   MEDIUM
   HARD
+}
+
+// New models for content management
+model Notice {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  isUrgent    Boolean  @default(false)
+  isPublished Boolean  @default(true)
+  publishDate DateTime @default(now())
+  expiryDate  DateTime?
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  
+  @@map("notices")
+}
+
+model News {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  excerpt     String?
+  imageUrl    String?
+  isPublished Boolean  @default(true)
+  publishDate DateTime @default(now())
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  
+  @@map("news")
+}
+
+model ThoughtOfTheDay {
+  id          String   @id @default(cuid())
+  quote       String
+  author      String
+  hindiQuote  String?
+  hindiAuthor String?
+  isActive    Boolean  @default(false)
+  date        DateTime @default(now())
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  
+  @@map("thoughts")
+}
+
+model SchoolSettings {
+  id              String   @id @default(cuid())
+  key             String   @unique
+  value           String
+  description     String?
+  category        String   @default("general")
+  updatedById     String
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  updatedBy       User     @relation(fields: [updatedById], references: [id])
+  
+  @@map("school_settings")
 }

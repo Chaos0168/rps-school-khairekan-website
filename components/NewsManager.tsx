@@ -57,12 +57,14 @@ export default function NewsManager({ userId }: NewsManagerProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    if (editingNews) {
+      alert('Edit functionality coming soon!')
+      return
+    }
+    
     try {
-      const url = editingNews ? `/api/admin/news/${editingNews.id}` : '/api/admin/news'
-      const method = editingNews ? 'PUT' : 'POST'
-      
-      const response = await fetch(url, {
-        method,
+      const response = await fetch('/api/admin/news', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
@@ -83,32 +85,11 @@ export default function NewsManager({ userId }: NewsManagerProps) {
   }
 
   const handleEdit = (newsItem: News) => {
-    setEditingNews(newsItem)
-    setFormData({
-      title: newsItem.title,
-      content: newsItem.content,
-      excerpt: newsItem.excerpt || '',
-      imageUrl: newsItem.imageUrl || '',
-      isPublished: newsItem.isPublished,
-      publishDate: newsItem.publishDate.split('T')[0]
-    })
-    setShowModal(true)
+    alert('Edit functionality coming soon!')
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this news article?')) return
-
-    try {
-      const response = await fetch(`/api/admin/news/${id}`, {
-        method: 'DELETE'
-      })
-
-      if (response.ok) {
-        await loadNews()
-      }
-    } catch (error) {
-      console.error('Error deleting news:', error)
-    }
+    alert('Delete functionality coming soon!')
   }
 
   const resetForm = () => {

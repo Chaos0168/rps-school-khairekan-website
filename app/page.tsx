@@ -7,6 +7,11 @@ import { FiPhone, FiMail, FiMapPin } from 'react-icons/fi'
 export default function HomePage() {
   const [currentStory, setCurrentStory] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [content, setContent] = useState({
+    notices: [],
+    news: [],
+    thoughtOfTheDay: null
+  })
   
   const stories = [
     "Where Dreams Take Flight",
@@ -25,6 +30,23 @@ export default function HomePage() {
       }, 350)
     }, 4000)
     return () => clearInterval(interval)
+  }, [])
+
+  // Fetch dynamic content from database
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const response = await fetch('/api/public/content')
+        if (response.ok) {
+          const data = await response.json()
+          setContent(data)
+        }
+      } catch (error) {
+        console.error('Error fetching content:', error)
+      }
+    }
+
+    fetchContent()
   }, [])
 
   return (
@@ -212,7 +234,17 @@ export default function HomePage() {
                 <h3 className="text-xl sm:text-2xl font-bold text-gray-900">Important Notices</h3>
               </div>
               <div className="space-y-4">
-                {[
+                {content.notices.length > 0 ? content.notices.map((notice, index) => (
+                  <div key={notice.id || index} className="border-l-4 border-orange-500 pl-4 py-2 hover:bg-orange-50 transition-colors duration-300">
+                    <div className="flex justify-between items-start">
+                      <h4 className="font-semibold text-gray-900">{notice.title}</h4>
+                      {notice.isUrgent && (
+                        <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">URGENT</span>
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-500 mt-1">{new Date(notice.publishDate).toLocaleDateString()}</p>
+                  </div>
+                )) : [
                   {
                     title: "Admission Test Schedule",
                     date: "15 Jan 2025",
@@ -259,7 +291,13 @@ export default function HomePage() {
                 <h3 className="text-xl sm:text-2xl font-bold text-gray-900">Latest News</h3>
               </div>
               <div className="space-y-4">
-                {[
+                {content.news.length > 0 ? content.news.map((news, index) => (
+                  <div key={news.id || index} className="border-b border-gray-100 pb-4">
+                    <h4 className="font-semibold text-gray-900 mb-2">{news.title}</h4>
+                    <p className="text-sm text-gray-600 mb-2">{news.excerpt}</p>
+                    <p className="text-xs text-gray-500">{new Date(news.publishDate).toLocaleDateString()}</p>
+                  </div>
+                )) : [
                   {
                     title: "R.P. Sr. Sec. School Students Win State Science Fair",
                     excerpt: "Our brilliant Class XII students dominated the robotics category, showcasing innovation that left judges speechless...",
@@ -299,17 +337,17 @@ export default function HomePage() {
               
               <div className="text-center py-6">
                 <blockquote className="text-lg sm:text-xl font-medium text-gray-800 mb-4 italic">
-                  "Education is the most powerful weapon which you can use to change the world."
+                  "{content.thoughtOfTheDay?.quote || 'Education is the most powerful weapon which you can use to change the world.'}"
                 </blockquote>
-                <cite className="text-purple-600 font-semibold">- Nelson Mandela</cite>
+                <cite className="text-purple-600 font-semibold">- {content.thoughtOfTheDay?.author || 'Nelson Mandela'}</cite>
               </div>
 
               <div className="mt-8 p-4 bg-white/80 rounded-xl">
                 <h4 className="font-semibold text-gray-900 mb-3">Hindi Thought</h4>
                 <blockquote className="text-base sm:text-lg font-medium text-gray-800 mb-2 font-hindi">
-                  "शिक्षा सबसे शक्तिशाली हथियार है जिससे आप दुनिया बदल सकते हैं।"
+                  "{content.thoughtOfTheDay?.hindiQuote || 'शिक्षा सबसे शक्तिशाली हथियार है जिससे आप दुनिया बदल सकते हैं।'}"
                 </blockquote>
-                <cite className="text-purple-600 font-semibold">- नेल्सन मंडेला</cite>
+                <cite className="text-purple-600 font-semibold">- {content.thoughtOfTheDay?.hindiAuthor || 'नेल्सन मंडेला'}</cite>
               </div>
 
               <div className="mt-6 text-center">
