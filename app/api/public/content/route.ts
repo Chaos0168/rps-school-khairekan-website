@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '../../../../lib/prisma'
 
+// Add caching to improve performance
+export const revalidate = 30 // Cache for 30 seconds
+
 export async function GET() {
   try {
     // Get active notices (published and not expired)
