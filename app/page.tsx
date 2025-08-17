@@ -36,10 +36,16 @@ export default function HomePage() {
   useEffect(() => {
     const fetchContent = async () => {
       try {
+        console.log('Fetching content from /api/public/content...')
         const response = await fetch('/api/public/content')
+        console.log('Response status:', response.status)
         if (response.ok) {
           const data = await response.json()
+          console.log('Fetched content:', data)
+          console.log('Notices count:', data.notices?.length || 0)
           setContent(data)
+        } else {
+          console.error('Failed to fetch content, status:', response.status)
         }
       } catch (error) {
         console.error('Error fetching content:', error)
