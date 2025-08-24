@@ -28,6 +28,8 @@ model User {
   news        News[]
   thoughts    ThoughtOfTheDay[]
   settingsUpdates SchoolSettings[]
+  gatePasses  GatePass[]
+  academicResources AcademicResource[]
   
   @@map("users")
 }
@@ -268,4 +270,67 @@ model SchoolSettings {
   updatedBy       User     @relation(fields: [updatedById], references: [id])
   
   @@map("school_settings")
+}
+
+model GatePass {
+  id                String   @id @default(cuid())
+  studentName       String
+  className         String
+  gender            String
+  fathersName       String
+  village           String
+  accompaniedBy     String
+  reason            GatePassReason
+  vanDriverName     String?
+  busNumber         String?
+  contactNumber     String
+  dispersalTime     String
+  studentImage      String?  // Base64 encoded image
+  createdById       String
+  issuingAuthorityName String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  // Relations
+  createdBy         User     @relation(fields: [createdById], references: [id])
+  
+  @@map("gate_passes")
+}
+
+enum GatePassReason {
+  SICKNESS_DURING_SCHOOL_HOURS
+  URGENT_WORK_AT_HOME
+  PERSONAL
+}
+
+model AcademicResource {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  type        AcademicResourceType
+  className   String
+  subject     String
+  year        String?
+  fileUrl     String?
+  fileName    String?
+  fileSize    Int?
+  downloadCount Int    @default(0)
+  isPublished Boolean  @default(true)
+  publishDate DateTime @default(now())
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  
+  @@map("academic_resources")
+}
+
+enum AcademicResourceType {
+  SYLLABUS
+  QUESTION_PAPER
+  DATE_SHEET
+  CURRICULUM
+  STUDY_MATERIAL
 }

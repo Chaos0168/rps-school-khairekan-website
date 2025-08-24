@@ -269,10 +269,26 @@ export default function HomePage() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <button className="btn-primary group">
+              <button 
+                className="btn-primary group"
+                onClick={() => {
+                  const admissionSection = document.getElementById('notices-section')
+                  if (admissionSection) {
+                    admissionSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  }
+                }}
+              >
                 <span className="relative z-10">Admission Open 2026-27</span>
               </button>
-              <button className="btn-secondary">
+              <button 
+                className="btn-secondary"
+                onClick={() => {
+                  const storySection = document.querySelector('.story-card')
+                  if (storySection) {
+                    storySection.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                  }
+                }}
+              >
                 Experience Our Story
               </button>
             </div>
@@ -466,7 +482,16 @@ export default function HomePage() {
                   </div>
                 ))}
               </div>
-              <button className="mt-6 text-orange-500 font-semibold hover:text-orange-600 transition-colors duration-300">
+              <button 
+                className="mt-6 text-orange-500 font-semibold hover:text-orange-600 transition-colors duration-300"
+                onClick={() => {
+                  // Scroll to notices section for more notices
+                  const noticesSection = document.getElementById('notices-section')
+                  if (noticesSection) {
+                    noticesSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  }
+                }}
+              >
                 View All Notices →
               </button>
             </div>
@@ -510,7 +535,16 @@ export default function HomePage() {
                   </div>
                 ))}
               </div>
-              <button className="mt-6 text-blue-500 font-semibold hover:text-blue-600 transition-colors duration-300">
+              <button 
+                className="mt-6 text-blue-500 font-semibold hover:text-blue-600 transition-colors duration-300"
+                onClick={() => {
+                  // Scroll to news items section
+                  const newsItems = document.querySelectorAll('.story-card')
+                  if (newsItems.length > 1) {
+                    newsItems[1].scrollIntoView({ behavior: 'smooth', block: 'center' })
+                  }
+                }}
+              >
                 Read All News →
               </button>
             </div>
@@ -540,7 +574,13 @@ export default function HomePage() {
               </div>
 
               <div className="mt-6 text-center">
-                <button className="text-purple-500 font-semibold hover:text-purple-600 transition-colors duration-300">
+                <button 
+                  className="text-purple-500 font-semibold hover:text-purple-600 transition-colors duration-300"
+                  onClick={() => {
+                    // Show a modal or navigate to thoughts archive
+                    alert('Previous thoughts archive coming soon!')
+                  }}
+                >
                   Previous Thoughts →
                 </button>
               </div>
@@ -640,10 +680,28 @@ export default function HomePage() {
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center px-4">
-              <button className="btn-primary text-base sm:text-lg lg:text-xl px-6 sm:px-8 lg:px-12 py-3 sm:py-4 lg:py-6 w-full sm:w-auto">
+              <button 
+                className="btn-primary text-base sm:text-lg lg:text-xl px-6 sm:px-8 lg:px-12 py-3 sm:py-4 lg:py-6 w-full sm:w-auto"
+                onClick={() => {
+                  // Scroll to contact section for admission inquiry
+                  const contactSection = document.querySelector('.bg-gradient-to-br.from-gray-900')
+                  if (contactSection) {
+                    contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  }
+                }}
+              >
                 Start Your Child's Journey
               </button>
-              <button className="btn-secondary text-base sm:text-lg lg:text-xl px-6 sm:px-8 lg:px-12 py-3 sm:py-4 lg:py-6 w-full sm:w-auto">
+              <button 
+                className="btn-secondary text-base sm:text-lg lg:text-xl px-6 sm:px-8 lg:px-12 py-3 sm:py-4 lg:py-6 w-full sm:w-auto"
+                onClick={() => {
+                  // Scroll to contact section for campus visit
+                  const contactSection = document.querySelector('.bg-gradient-to-br.from-gray-900')
+                  if (contactSection) {
+                    contactSection.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                  }
+                }}
+              >
                 Schedule Campus Visit
               </button>
             </div>
@@ -690,7 +748,18 @@ export default function HomePage() {
                 <p className="text-gray-300 whitespace-pre-line mb-6 leading-relaxed">
                   {contact.info}
                 </p>
-                <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 hover:transform hover:scale-105 text-sm sm:text-base">
+                <button 
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-300 hover:transform hover:scale-105 text-sm sm:text-base"
+                  onClick={() => {
+                    if (contact.action === "Get Directions") {
+                      window.open("https://maps.google.com?q=R.P.+Sr.+Sec.+School+Khairekan+Haryana", "_blank")
+                    } else if (contact.action === "Call Now") {
+                      window.open("tel:+919876543210", "_self")
+                    } else if (contact.action === "Email Us") {
+                      window.open("mailto:info@rpskhairekan.edu.in", "_self")
+                    }
+                  }}
+                >
                   {contact.action}
                 </button>
               </div>

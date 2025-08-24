@@ -29,4 +29,21 @@ export async function getUserByEmail(email: string) {
       class: true
     }
   })
+}
+
+export async function verifyAuth(request: Request) {
+  try {
+    const authHeader = request.headers.get('authorization')
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return null
+    }
+
+    const token = authHeader.substring(7)
+    // For now, we'll use a simple approach - in production you'd want proper JWT verification
+    // This is a placeholder implementation
+    const userData = JSON.parse(atob(token))
+    return userData
+  } catch (error) {
+    return null
+  }
 } 

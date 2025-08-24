@@ -1,13 +1,15 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { FiUsers, FiBookOpen, FiFileText, FiSettings, FiBell, FiEdit3, FiEye, FiTrash2, FiPlus, FiBook, FiAward, FiBarChart, FiCalendar, FiMail, FiHome, FiLogOut, FiMenu, FiX } from 'react-icons/fi'
+import { FiUsers, FiBookOpen, FiFileText, FiSettings, FiBell, FiEdit3, FiEye, FiTrash2, FiPlus, FiBook, FiAward, FiBarChart, FiCalendar, FiMail, FiHome, FiLogOut, FiMenu, FiX, FiLogOut as FiGatePass } from 'react-icons/fi'
 import NoticesManager from '../../components/NoticesManager'
 import NewsManager from '../../components/NewsManager'
 import ThoughtsManager from '../../components/ThoughtsManager'
 import ClassesManager from '../../components/ClassesManager'
 import TermsManager from '../../components/TermsManager'
 import SubjectsManager from '../../components/SubjectsManager'
+import GatePassManager from '../../components/GatePassManager'
+import AcademicResourcesManager from '../../components/AcademicResourcesManager'
 
 interface User {
   id: string
@@ -70,6 +72,7 @@ export default function AdminPanel() {
   const [thoughts, setThoughts] = useState<ThoughtOfTheDay[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [showGatePassManager, setShowGatePassManager] = useState(false)
 
   // Check authentication and load user data
   useEffect(() => {
@@ -164,6 +167,8 @@ export default function AdminPanel() {
     { id: 'notices', label: 'Notices', icon: FiBell },
     { id: 'news', label: 'News', icon: FiFileText },
     { id: 'thoughts', label: 'Thought of Day', icon: FiEdit3 },
+    { id: 'gate-pass', label: 'Gate Pass', icon: FiGatePass },
+    { id: 'academic-resources', label: 'Academic Resources', icon: FiAward },
     { id: 'users', label: 'User Management', icon: FiUsers },
     { id: 'academic', label: 'Academic Structure', icon: FiBookOpen },
     { id: 'resources', label: 'Resources & Quizzes', icon: FiBook },
@@ -299,10 +304,12 @@ export default function AdminPanel() {
         </header>
 
         <div className="p-4 lg:p-8">
-          {activeTab === 'dashboard' && <DashboardView stats={stats} />}
+          {activeTab === 'dashboard' && user && <DashboardView stats={stats} user={user} />}
           {activeTab === 'notices' && user && <NoticesManager userId={user.id} />}
           {activeTab === 'news' && user && <NewsManager userId={user.id} />}
           {activeTab === 'thoughts' && user && <ThoughtsManager userId={user.id} />}
+          {activeTab === 'gate-pass' && user && <GatePassView user={user} />}
+          {activeTab === 'academic-resources' && user && <AcademicResourcesManager userId={user.id} />}
           {activeTab === 'users' && <UserManagement />}
           {activeTab === 'academic' && <AcademicManagement />}
           {activeTab === 'resources' && <ResourceManagement />}
@@ -314,7 +321,8 @@ export default function AdminPanel() {
 }
 
 // Dashboard Component
-function DashboardView({ stats }: { stats: AdminStats }) {
+function DashboardView({ stats, user }: { stats: AdminStats; user: any }) {
+  const [showGatePassManager, setShowGatePassManager] = useState(false)
   return (
     <div className="space-y-6 lg:space-y-8">
       {/* Stats Grid */}
@@ -349,14 +357,18 @@ function DashboardView({ stats }: { stats: AdminStats }) {
         <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
           {[
-            { label: 'Add Notice', icon: FiBell, color: 'red' },
-            { label: 'Create News', icon: FiFileText, color: 'blue' },
-            { label: 'Update Thought', icon: FiEdit3, color: 'purple' },
-            { label: 'Add User', icon: FiUsers, color: 'green' }
+            { label: 'Add Notice', icon: FiBell, color: 'red', action: () => window.location.href = '/admin?tab=notices' },
+            { label: 'Create News', icon: FiFileText, color: 'blue', action: () => window.location.href = '/admin?tab=news' },
+            { label: 'Update Thought', icon: FiEdit3, color: 'purple', action: () => window.location.href = '/admin?tab=thoughts' },
+            { label: 'Gate Pass', icon: FiGatePass, color: 'orange', action: () => setShowGatePassManager(true) }
           ].map((action, index) => {
             const Icon = action.icon
             return (
-              <button key={index} className="p-3 lg:p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors group">
+              <button 
+                key={index} 
+                onClick={action.action}
+                className="p-3 lg:p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors group"
+              >
                 <Icon className={`w-5 h-5 lg:w-6 lg:h-6 text-${action.color}-600 mx-auto mb-2 group-hover:scale-110 transition-transform`} />
                 <p className="text-xs lg:text-sm font-medium text-gray-700">{action.label}</p>
               </button>
@@ -364,6 +376,10 @@ function DashboardView({ stats }: { stats: AdminStats }) {
           })}
         </div>
       </div>
+
+      {showGatePassManager && user && (
+        <GatePassManager onClose={() => setShowGatePassManager(false)} userId={user.id} />
+      )}
     </div>
   )
 }
@@ -375,7 +391,12 @@ function UserManagement() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold text-gray-900">User Management</h2>
-        <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
+        <button 
+          className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+          onClick={() => {
+            alert('User management feature coming soon!')
+          }}
+        >
           <FiPlus className="w-4 h-4" />
           <span>Add User</span>
         </button>
@@ -493,7 +514,12 @@ function ResourceManagement() {
         <div className="bg-white rounded-xl shadow-sm border p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Resource Library</h3>
           <p className="text-gray-600 mb-4">Manage syllabi, question papers, and educational resources</p>
-          <button className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg">
+          <button 
+            className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg"
+            onClick={() => {
+              window.location.href = '/examinations'
+            }}
+          >
             Manage Resources
           </button>
         </div>
@@ -501,11 +527,58 @@ function ResourceManagement() {
         <div className="bg-white rounded-xl shadow-sm border p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Quiz Management</h3>
           <p className="text-gray-600 mb-4">Create and manage quizzes and assessments</p>
-          <button className="w-full bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded-lg">
+          <button 
+            className="w-full bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded-lg"
+            onClick={() => {
+              window.location.href = '/examinations'
+            }}
+          >
             Manage Quizzes
           </button>
         </div>
       </div>
+    </div>
+  )
+}
+
+function GatePassView({ user }: { user: any }) {
+  const [showGatePassManager, setShowGatePassManager] = useState(false)
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-xl font-semibold text-gray-900">Gate Pass Management</h2>
+          <p className="text-gray-600 mt-1">Issue gate passes for students leaving school premises</p>
+        </div>
+        <button 
+          onClick={() => setShowGatePassManager(true)}
+          className="btn-primary flex items-center gap-2"
+        >
+          <FiPlus className="w-4 h-4" />
+          Create Gate Pass
+        </button>
+      </div>
+      
+      <div className="bg-white rounded-xl shadow-sm border p-6">
+        <div className="text-center py-8">
+          <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <FiGatePass className="w-8 h-8 text-orange-600" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">No Gate Passes Created Yet</h3>
+          <p className="text-gray-600 mb-4">Start by creating your first gate pass for a student</p>
+          <button 
+            onClick={() => setShowGatePassManager(true)}
+            className="btn-primary"
+          >
+            Create First Gate Pass
+          </button>
+        </div>
+      </div>
+
+      {showGatePassManager && (
+        <GatePassManager onClose={() => setShowGatePassManager(false)} userId={user.id} />
+      )}
     </div>
   )
 }

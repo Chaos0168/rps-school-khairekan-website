@@ -137,12 +137,12 @@ export default function Header() {
               <nav className="hidden lg:flex items-center space-x-1">
                 {[
                   { en: 'Home', hi: 'मुख्य', href: '/' },
-                  { en: 'About', hi: 'के बारे में', href: '#' },
-                  { en: 'Academics', hi: 'शैक्षणिक', href: '#' },
+                  { en: 'About', hi: 'के बारे में', href: '#about' },
+                  { en: 'Academics', hi: 'शैक्षणिक', href: '/academics' },
                   { en: 'Examinations', hi: 'परीक्षा', href: '/examinations' },
-                  { en: 'Notices', hi: 'सूचनाएं', href: '#' },
-                  { en: 'News', hi: 'समाचार', href: '#' },
-                  { en: 'Gallery', hi: 'गैलरी', href: '#' },
+                  { en: 'Notices', hi: 'सूचनाएं', href: '/notices' },
+                  { en: 'News', hi: 'समाचार', href: '/news' },
+                  { en: 'Gallery', hi: 'गैलरी', href: '/gallery' },
                 ].map((item, index) => (
                   <a 
                     key={index}
@@ -189,7 +189,16 @@ export default function Header() {
               )}
 
               {/* Admission Button */}
-              <button className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-2 sm:px-3 py-2 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg text-xs whitespace-nowrap flex-shrink-0">
+              <button 
+                className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-2 sm:px-3 py-2 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg text-xs whitespace-nowrap flex-shrink-0"
+                onClick={() => {
+                  // Scroll to contact section for admission inquiry
+                  const contactSection = document.querySelector('.bg-gradient-to-br.from-gray-900')
+                  if (contactSection) {
+                    contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  }
+                }}
+              >
                 {language === 'en' ? 'Admission' : 'प्रवेश'}
               </button>
               
@@ -215,12 +224,12 @@ export default function Header() {
               <nav className="flex flex-col space-y-2">
                 {[
                   { en: 'Home', hi: 'मुख्य', href: '/' },
-                  { en: 'About', hi: 'के बारे में', href: '#' },
-                  { en: 'Academics', hi: 'शैक्षणिक', href: '#' },
+                  { en: 'About', hi: 'के बारे में', href: '#about' },
+                  { en: 'Academics', hi: 'शैक्षणिक', href: '/academics' },
                   { en: 'Examinations', hi: 'परीक्षा', href: '/examinations' },
-                  { en: 'Notices', hi: 'सूचनाएं', href: '#' },
-                  { en: 'News', hi: 'समाचार', href: '#' },
-                  { en: 'Gallery', hi: 'गैलरी', href: '#' },
+                  { en: 'Notices', hi: 'सूचनाएं', href: '/notices' },
+                  { en: 'News', hi: 'समाचार', href: '/news' },
+                  { en: 'Gallery', hi: 'गैलरी', href: '/gallery' },
                 ].map((item, index) => (
                   <a 
                     key={index}
@@ -270,7 +279,19 @@ export default function Header() {
                   )}
                   
                   <div className="px-4">
-                    <button className="btn-primary w-full text-sm py-2">
+                    <button 
+                      className="btn-primary w-full text-sm py-2"
+                      onClick={() => {
+                        // Close mobile menu and scroll to contact section
+                        setIsMenuOpen(false)
+                        setTimeout(() => {
+                          const contactSection = document.querySelector('.bg-gradient-to-br.from-gray-900')
+                          if (contactSection) {
+                            contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                          }
+                        }, 100)
+                      }}
+                    >
                       {language === 'en' ? 'Admission Open 2026-27' : 'प्रवेश खुला 2026-27'}
                     </button>
                   </div>
