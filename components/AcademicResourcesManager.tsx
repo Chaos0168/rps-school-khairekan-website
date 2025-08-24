@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { FiPlus, FiEdit, FiTrash2, FiDownload, FiBook, FiCalendar, FiFileText, FiBookOpen, FiGraduationCap, FiX, FiSave, FiUpload } from 'react-icons/fi'
+import { FiPlus, FiEdit, FiTrash2, FiDownload, FiBook, FiCalendar, FiFileText, FiBookOpen, FiAward, FiX, FiSave, FiUpload } from 'react-icons/fi'
 
 interface AcademicResource {
   id: string
@@ -36,7 +36,7 @@ export default function AcademicResourcesManager({ userId }: AcademicResourcesMa
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    type: 'SYLLABUS' as const,
+    type: 'SYLLABUS' as 'SYLLABUS' | 'QUESTION_PAPER' | 'DATE_SHEET' | 'CURRICULUM' | 'STUDY_MATERIAL',
     className: '',
     subject: '',
     year: '',
@@ -157,7 +157,7 @@ export default function AcademicResourcesManager({ userId }: AcademicResourcesMa
       case 'QUESTION_PAPER': return <FiFileText className="w-5 h-5" />
       case 'DATE_SHEET': return <FiCalendar className="w-5 h-5" />
       case 'CURRICULUM': return <FiBookOpen className="w-5 h-5" />
-      case 'STUDY_MATERIAL': return <FiGraduationCap className="w-5 h-5" />
+      case 'STUDY_MATERIAL': return <FiAward className="w-5 h-5" />
       default: return <FiBook className="w-5 h-5" />
     }
   }
