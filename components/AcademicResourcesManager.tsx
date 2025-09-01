@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { FiPlus, FiEdit, FiTrash2, FiDownload, FiBook, FiCalendar, FiFileText, FiBookOpen, FiAward, FiX, FiSave, FiUpload } from 'react-icons/fi'
+import { FiPlus, FiEdit, FiTrash2, FiDownload, FiBook, FiCalendar, FiFileText, FiBookOpen, FiAward, FiX, FiSave, FiUpload, FiFile, FiCheckCircle } from 'react-icons/fi'
 
 interface AcademicResource {
   id: string
@@ -24,29 +24,52 @@ interface AcademicResource {
   }
 }
 
+interface Class {
+  id: string
+  name: string
+  description?: string
+}
+
+interface Subject {
+  id: string
+  name: string
+  code: string
+}
+
 interface AcademicResourcesManagerProps {
   userId: string
 }
 
 export default function AcademicResourcesManager({ userId }: AcademicResourcesManagerProps) {
   const [resources, setResources] = useState<AcademicResource[]>([])
+  const [classes, setClasses] = useState<Class[]>([])
+  const [subjects, setSubjects] = useState<Subject[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
+  const [showBulkUpload, setShowBulkUpload] = useState(false)
   const [editingResource, setEditingResource] = useState<AcademicResource | null>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const [bulkUploadData, setBulkUploadData] = useState({
+    selectedClass: '',
+    uploadType: 'SYLLABUS' as 'SYLLABUS' | 'QUESTION_PAPER' | 'DATE_SHEET',
+    files: {} as Record<string, File>,
+    descriptions: {} as Record<string, string>
+  })
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     type: 'SYLLABUS' as 'SYLLABUS' | 'QUESTION_PAPER' | 'DATE_SHEET' | 'CURRICULUM' | 'STUDY_MATERIAL',
     className: '',
     subject: '',
-    year: '',
-    fileUrl: '',
+    year: new Date().getFullYear().toString(),
     fileName: '',
     isPublished: true
   })
 
   useEffect(() => {
     fetchResources()
+    fetchClasses()
   }, [])
 
   const fetchResources = async () => {
@@ -63,37 +86,163 @@ export default function AcademicResourcesManager({ userId }: AcademicResourcesMa
     }
   }
 
+  const fetchClasses = async () => {
+    try {
+      const response = await fetch('/api/classes')
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success) {
+          const classData = data.classes.map((cls: any) => ({
+            id: cls.id,
+            name: cls.name,
+            description: cls.description
+          }))
+          setClasses(classData)
+          
+          // Extract unique subjects across all classes and terms
+          const allSubjects: Subject[] = []
+          data.classes.forEach((cls: any) => {
+            cls.terms.forEach((term: any) => {
+              term.subjects.forEach((subject: any) => {
+                if (!allSubjects.find(s => s.code === subject.code)) {
+                  allSubjects.push({
+                    id: subject.id,
+                    name: subject.name,
+                    code: subject.code
+                  })
+                }
+              })
+            })
+          })
+          setSubjects(allSubjects)
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching classes:', error)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
 
     try {
-      const url = editingResource 
-        ? `/api/admin/academic-resources/${editingResource.id}`
-        : '/api/admin/academic-resources'
-      
-      const method = editingResource ? 'PUT' : 'POST'
-      
-      const payload = editingResource 
-        ? formData 
-        : { ...formData, createdById: userId }
+      if (!selectedFile && !editingResource) {
+        alert('Please select a file to upload')
+        setIsLoading(false)
+        return
+      }
 
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      })
+      if (editingResource) {
+        // For editing, just update the metadata
+        const response = await fetch(`/api/admin/academic-resources/${editingResource.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        })
 
-      if (response.ok) {
-        await fetchResources()
-        resetForm()
-        alert(editingResource ? 'Resource updated successfully!' : 'Resource created successfully!')
+        if (response.ok) {
+          await fetchResources()
+          resetForm()
+          alert('Resource updated successfully!')
+        } else {
+          throw new Error('Failed to update resource')
+        }
       } else {
-        throw new Error('Failed to save resource')
+        // For new resources, use FormData for file upload
+        const uploadFormData = new FormData()
+        uploadFormData.append('title', formData.title)
+        uploadFormData.append('description', formData.description)
+        uploadFormData.append('type', formData.type)
+        uploadFormData.append('className', formData.className)
+        uploadFormData.append('subject', formData.subject)
+        uploadFormData.append('year', formData.year)
+        uploadFormData.append('isPublished', formData.isPublished.toString())
+        uploadFormData.append('createdById', userId)
+        
+        if (selectedFile) {
+          uploadFormData.append('file', selectedFile)
+        }
+
+        const response = await fetch('/api/admin/academic-resources/upload', {
+          method: 'POST',
+          body: uploadFormData
+        })
+
+        if (response.ok) {
+          await fetchResources()
+          resetForm()
+          alert('Resource created successfully!')
+        } else {
+          const errorData = await response.json()
+          throw new Error(errorData.error || 'Failed to create resource')
+        }
       }
     } catch (error) {
       console.error('Error saving resource:', error)
-      alert('Failed to save resource')
+      alert('Failed to save resource: ' + (error as Error).message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleBulkUpload = async () => {
+    if (!bulkUploadData.selectedClass) {
+      alert('Please select a class')
+      return
+    }
+
+    const fileCount = Object.keys(bulkUploadData.files).length
+    if (fileCount === 0) {
+      alert('Please select at least one file to upload')
+      return
+    }
+
+    setIsLoading(true)
+    let successCount = 0
+    let failCount = 0
+
+    try {
+      for (const [subjectName, file] of Object.entries(bulkUploadData.files)) {
+        try {
+          const uploadFormData = new FormData()
+          uploadFormData.append('title', `${bulkUploadData.uploadType} - ${subjectName} - ${bulkUploadData.selectedClass}`)
+          uploadFormData.append('description', bulkUploadData.descriptions[subjectName] || `${bulkUploadData.uploadType} for ${subjectName}`)
+          uploadFormData.append('type', bulkUploadData.uploadType)
+          uploadFormData.append('className', bulkUploadData.selectedClass)
+          uploadFormData.append('subject', subjectName)
+          uploadFormData.append('year', new Date().getFullYear().toString())
+          uploadFormData.append('isPublished', 'true')
+          uploadFormData.append('createdById', userId)
+          uploadFormData.append('file', file)
+
+          const response = await fetch('/api/admin/academic-resources/upload', {
+            method: 'POST',
+            body: uploadFormData
+          })
+
+          if (response.ok) {
+            successCount++
+          } else {
+            failCount++
+          }
+        } catch (error) {
+          failCount++
+        }
+      }
+
+      await fetchResources()
+      alert(`Bulk upload completed! Success: ${successCount}, Failed: ${failCount}`)
+      setBulkUploadData({
+        selectedClass: '',
+        uploadType: 'SYLLABUS',
+        files: {},
+        descriptions: {}
+      })
+      setShowBulkUpload(false)
+    } catch (error) {
+      console.error('Bulk upload error:', error)
+      alert('Bulk upload failed')
     } finally {
       setIsLoading(false)
     }
@@ -127,11 +276,11 @@ export default function AcademicResourcesManager({ userId }: AcademicResourcesMa
       type: resource.type,
       className: resource.className,
       subject: resource.subject,
-      year: resource.year || '',
-      fileUrl: resource.fileUrl || '',
+      year: resource.year || new Date().getFullYear().toString(),
       fileName: resource.fileName || '',
       isPublished: resource.isPublished
     })
+    setSelectedFile(null) // Can't edit file, only metadata
     setShowForm(true)
   }
 
@@ -142,13 +291,27 @@ export default function AcademicResourcesManager({ userId }: AcademicResourcesMa
       type: 'SYLLABUS',
       className: '',
       subject: '',
-      year: '',
-      fileUrl: '',
+      year: new Date().getFullYear().toString(),
       fileName: '',
       isPublished: true
     })
     setEditingResource(null)
+    setSelectedFile(null)
     setShowForm(false)
+  }
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setSelectedFile(file)
+      setFormData(prev => ({ ...prev, fileName: file.name }))
+    }
+  }
+
+  const getUniqueSubjects = () => {
+    const uniqueSubjects = new Set<string>()
+    subjects.forEach(subject => uniqueSubjects.add(subject.name))
+    return Array.from(uniqueSubjects).sort()
   }
 
   const getTypeIcon = (type: string) => {
@@ -181,13 +344,22 @@ export default function AcademicResourcesManager({ userId }: AcademicResourcesMa
           <h2 className="text-2xl font-bold text-gray-900">Academic Resources</h2>
           <p className="text-gray-600">Manage syllabi, question papers, and date sheets</p>
         </div>
-        <button
-          onClick={() => setShowForm(true)}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-        >
-          <FiPlus className="w-4 h-4" />
-          Add Resource
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setShowBulkUpload(true)}
+            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+          >
+            <FiUpload className="w-4 h-4" />
+            Bulk Upload
+          </button>
+          <button
+            onClick={() => setShowForm(true)}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+          >
+            <FiPlus className="w-4 h-4" />
+            Add Resource
+          </button>
+        </div>
       </div>
 
       {/* Form Modal */}
@@ -241,28 +413,36 @@ export default function AcademicResourcesManager({ userId }: AcademicResourcesMa
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Class *
                   </label>
-                  <input
-                    type="text"
+                  <select
                     required
                     value={formData.className}
                     onChange={(e) => setFormData(prev => ({ ...prev, className: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="e.g., Class XII, All Classes"
-                  />
+                  >
+                    <option value="">Select a class</option>
+                    {classes.map(cls => (
+                      <option key={cls.id} value={cls.name}>{cls.name}</option>
+                    ))}
+                    <option value="All Classes">All Classes</option>
+                  </select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Subject *
                   </label>
-                  <input
-                    type="text"
+                  <select
                     required
                     value={formData.subject}
                     onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="e.g., Mathematics, All Subjects"
-                  />
+                  >
+                    <option value="">Select a subject</option>
+                    {getUniqueSubjects().map(subject => (
+                      <option key={subject} value={subject}>{subject}</option>
+                    ))}
+                    <option value="All Subjects">All Subjects</option>
+                  </select>
                 </div>
 
                 <div>
@@ -275,19 +455,6 @@ export default function AcademicResourcesManager({ userId }: AcademicResourcesMa
                     onChange={(e) => setFormData(prev => ({ ...prev, year: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="e.g., 2024, 2023"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    File URL
-                  </label>
-                  <input
-                    type="url"
-                    value={formData.fileUrl}
-                    onChange={(e) => setFormData(prev => ({ ...prev, fileUrl: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="https://example.com/file.pdf"
                   />
                 </div>
               </div>
@@ -304,6 +471,73 @@ export default function AcademicResourcesManager({ userId }: AcademicResourcesMa
                   placeholder="Brief description of the resource..."
                 />
               </div>
+
+              {!editingResource && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Upload File *
+                  </label>
+                  <div className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+                    selectedFile 
+                      ? 'border-green-300 bg-green-50' 
+                      : 'border-gray-300 hover:border-blue-400 hover:bg-blue-50'
+                  }`}>
+                    {selectedFile ? (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-center">
+                          <FiFile className="w-12 h-12 text-green-600" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-green-900">{selectedFile.name}</p>
+                          <p className="text-sm text-green-700">
+                            {(selectedFile.size / 1024 / 1024).toFixed(2)} MB • {selectedFile.type}
+                          </p>
+                        </div>
+                        <div className="flex justify-center space-x-4">
+                          <label
+                            htmlFor="file-upload"
+                            className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors inline-flex items-center text-sm"
+                          >
+                            <FiUpload className="mr-2" />
+                            Change File
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedFile(null)}
+                            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors text-sm"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <FiFile className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                        <div className="space-y-2">
+                          <label
+                            htmlFor="file-upload"
+                            className="cursor-pointer bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors inline-flex items-center"
+                          >
+                            <FiUpload className="mr-2" />
+                            Choose File
+                          </label>
+                          <p className="text-sm text-gray-500">
+                            Supports PDF, DOC, DOCX files up to 10MB
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      onChange={handleFileSelect}
+                      accept=".pdf,.doc,.docx"
+                      className="hidden"
+                      id="file-upload"
+                      required={!editingResource}
+                    />
+                  </div>
+                </div>
+              )}
 
               <div>
                 <label className="flex items-center">
@@ -335,6 +569,139 @@ export default function AcademicResourcesManager({ userId }: AcademicResourcesMa
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Upload Modal */}
+      {showBulkUpload && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-semibold">Bulk Upload Resources</h3>
+              <button onClick={() => setShowBulkUpload(false)} className="text-gray-400 hover:text-gray-600">
+                <FiX className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Select Class *
+                  </label>
+                  <select
+                    value={bulkUploadData.selectedClass}
+                    onChange={(e) => setBulkUploadData(prev => ({ ...prev, selectedClass: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="">Choose a class</option>
+                    {classes.map(cls => (
+                      <option key={cls.id} value={cls.name}>{cls.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Upload Type *
+                  </label>
+                  <select
+                    value={bulkUploadData.uploadType}
+                    onChange={(e) => setBulkUploadData(prev => ({ ...prev, uploadType: e.target.value as any }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="SYLLABUS">Syllabus</option>
+                    <option value="QUESTION_PAPER">Question Papers</option>
+                    <option value="DATE_SHEET">Date Sheets</option>
+                  </select>
+                </div>
+              </div>
+
+              {bulkUploadData.selectedClass && (
+                <div>
+                  <h4 className="text-lg font-medium text-gray-900 mb-4">
+                    Upload {bulkUploadData.uploadType} for All Subjects
+                  </h4>
+                  <p className="text-gray-600 mb-4">
+                    Select files for each subject. The files will be uploaded for all terms of {bulkUploadData.selectedClass}.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {getUniqueSubjects().map(subject => (
+                      <div key={subject} className="border rounded-lg p-4 space-y-3">
+                        <h5 className="font-medium text-gray-900">{subject}</h5>
+                        
+                        <div>
+                          <label className="block text-sm text-gray-700 mb-1">File</label>
+                          <div className="flex items-center space-x-2">
+                            <input
+                              type="file"
+                              accept=".pdf,.doc,.docx"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0]
+                                if (file) {
+                                  setBulkUploadData(prev => ({
+                                    ...prev,
+                                    files: { ...prev.files, [subject]: file }
+                                  }))
+                                }
+                              }}
+                              className="hidden"
+                              id={`file-${subject}`}
+                            />
+                            <label
+                              htmlFor={`file-${subject}`}
+                              className="cursor-pointer bg-blue-500 text-white px-3 py-2 rounded text-sm hover:bg-blue-600 transition-colors flex items-center"
+                            >
+                              <FiUpload className="mr-1" />
+                              Choose File
+                            </label>
+                            {bulkUploadData.files[subject] && (
+                              <div className="flex items-center text-green-600">
+                                <FiCheckCircle className="w-4 h-4 mr-1" />
+                                <span className="text-sm">{bulkUploadData.files[subject].name}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm text-gray-700 mb-1">Description (Optional)</label>
+                          <input
+                            type="text"
+                            placeholder={`${bulkUploadData.uploadType} for ${subject}`}
+                            value={bulkUploadData.descriptions[subject] || ''}
+                            onChange={(e) => setBulkUploadData(prev => ({
+                              ...prev,
+                              descriptions: { ...prev.descriptions, [subject]: e.target.value }
+                            }))}
+                            className="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex justify-end gap-3 pt-4 border-t">
+                <button
+                  onClick={() => setShowBulkUpload(false)}
+                  className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleBulkUpload}
+                  disabled={isLoading || !bulkUploadData.selectedClass || Object.keys(bulkUploadData.files).length === 0}
+                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors disabled:opacity-50"
+                >
+                  <FiUpload className="w-4 h-4" />
+                  {isLoading ? 'Uploading...' : `Upload ${Object.keys(bulkUploadData.files).length} Files`}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

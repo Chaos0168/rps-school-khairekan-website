@@ -193,6 +193,7 @@ enum UserRole {
 enum ResourceType {
   SYLLABUS
   QUESTION_PAPER
+  DATE_SHEET
   QUIZ
 }
 

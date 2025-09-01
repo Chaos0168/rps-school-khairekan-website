@@ -23,7 +23,7 @@ export default function AdminUploadModal({
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    type: 'syllabus' as 'syllabus' | 'question_paper' | 'quiz',
+    type: 'syllabus' as 'syllabus' | 'question_paper' | 'quiz' | 'date_sheet',
     file: null as File | null
   })
 
@@ -235,6 +235,7 @@ export default function AdminUploadModal({
               >
                 <option value="syllabus">Syllabus</option>
                 <option value="question_paper">Question Paper</option>
+                <option value="date_sheet">Date Sheet</option>
                 <option value="quiz">Quiz</option>
               </select>
             </div>
@@ -255,7 +256,7 @@ export default function AdminUploadModal({
             />
           </div>
 
-          {/* File Upload for Syllabus and Question Papers */}
+          {/* File Upload for Syllabus, Question Papers, and Date Sheets */}
           {formData.type !== 'quiz' && (
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">

@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
     
     const title = formData.get('title') as string
     const description = formData.get('description') as string
-    const type = formData.get('type') as 'SYLLABUS' | 'QUESTION_PAPER' | 'QUIZ'
+    const type = formData.get('type') as string
     const subjectId = formData.get('subjectId') as string
     const uploadedById = formData.get('uploadedById') as string
     const file = formData.get('file') as File | null
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
       data: {
         title,
         description,
-        type,
+        type: type as any,
         subjectId,
         uploadedById,
         fileUrl,

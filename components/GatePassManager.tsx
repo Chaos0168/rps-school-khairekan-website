@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState, useRef } from 'react'
-import { FiPrinter, FiSave, FiX } from 'react-icons/fi'
+import React, { useState, useRef, useEffect } from 'react'
+import { FiPrinter, FiSave, FiX, FiDownload, FiList, FiPlus, FiCalendar, FiSearch } from 'react-icons/fi'
 
 interface GatePass {
   id?: string
@@ -17,6 +17,15 @@ interface GatePass {
   contactNumber: string
   dispersalTime: string
   issuingAuthorityName: string
+}
+
+interface StoredGatePass extends GatePass {
+  id: string
+  createdAt: string
+  createdBy: {
+    name: string
+    email: string
+  }
 }
 
 interface GatePassManagerProps {
@@ -42,10 +51,89 @@ export default function GatePassManager({ onClose, userId }: GatePassManagerProp
 
   const [isLoading, setIsLoading] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
+  const [viewMode, setViewMode] = useState<'create' | 'list'>('create')
+  const [gatePasses, setGatePasses] = useState<StoredGatePass[]>([])
+  const [searchTerm, setSearchTerm] = useState('')
+  const [dateFilter, setDateFilter] = useState('')
+  const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 0 })
   const printRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (viewMode === 'list') {
+      loadGatePasses()
+    }
+  }, [viewMode, pagination.page, searchTerm, dateFilter])
 
   const handleInputChange = (field: keyof GatePass, value: string) => {
     setGatePass(prev => ({ ...prev, [field]: value }))
+  }
+
+  const loadGatePasses = async () => {
+    try {
+      setIsLoading(true)
+      const params = new URLSearchParams({
+        page: pagination.page.toString(),
+        limit: pagination.limit.toString(),
+        ...(searchTerm && { search: searchTerm }),
+        ...(dateFilter && { date: dateFilter })
+      })
+
+      const response = await fetch(`/api/admin/gate-pass?${params}`)
+      if (response.ok) {
+        const data = await response.json()
+        setGatePasses(data.gatePasses)
+        setPagination(prev => ({
+          ...prev,
+          total: data.total,
+          totalPages: data.totalPages
+        }))
+      } else {
+        console.error('Failed to load gate passes')
+      }
+    } catch (error) {
+      console.error('Error loading gate passes:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleExportExcel = async () => {
+    try {
+      setIsLoading(true)
+      const params = new URLSearchParams()
+      if (dateFilter) {
+        params.set('startDate', dateFilter)
+        params.set('endDate', dateFilter)
+      } else {
+        // Export last 30 days if no date filter
+        const endDate = new Date()
+        const startDate = new Date()
+        startDate.setDate(startDate.getDate() - 30)
+        params.set('startDate', startDate.toISOString().split('T')[0])
+        params.set('endDate', endDate.toISOString().split('T')[0])
+      }
+
+      const response = await fetch(`/api/admin/gate-pass/export?${params}`)
+      if (response.ok) {
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = `gate-passes-${new Date().toISOString().split('T')[0]}.csv`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(url)
+        alert('Gate passes exported successfully!')
+      } else {
+        alert('Failed to export gate passes')
+      }
+    } catch (error) {
+      console.error('Export error:', error)
+      alert('Failed to export gate passes')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleSubmit = async () => {
@@ -70,6 +158,10 @@ export default function GatePassManager({ onClose, userId }: GatePassManagerProp
       if (response.ok) {
         alert('Gate Pass created successfully!')
         setShowPreview(true)
+        // Refresh the list if we're in list mode
+        if (viewMode === 'list') {
+          loadGatePasses()
+        }
       } else {
         const error = await response.text()
         alert(`Error creating gate pass: ${error}`)
@@ -98,12 +190,15 @@ export default function GatePassManager({ onClose, userId }: GatePassManagerProp
                   font-size: 12px;
                 }
                 .gate-pass-container {
-                  width: 2.75in;
-                  height: 4.5in;
+                  width: 8.27in;
+                  height: 5.83in;
                   border: 2px solid #000;
-                  padding: 10px;
+                  padding: 20px;
                   position: relative;
                   background: white;
+                  margin: 0 auto;
+                  display: flex;
+                  flex-direction: column;
                 }
                 .header {
                   text-align: center;
@@ -225,53 +320,40 @@ export default function GatePassManager({ onClose, userId }: GatePassManagerProp
           <span className="value">{gatePass.gender}</span>
         </div>
 
-        <div className="form-row">
-          <span className="label">FATHER'S NAME</span>
-          <span className="value">{gatePass.fathersName}</span>
-        </div>
+                 <div className="form-row">
+           <span className="label">FATHER'S NAME</span>
+           <span className="value">{gatePass.fathersName}</span>
+           <span className="label" style={{marginLeft: '15px'}}>VILLAGE</span>
+           <span className="value">{gatePass.village}</span>
+         </div>
 
-        <div className="form-row">
-          <span className="label">VILLAGE</span>
-          <span className="value">{gatePass.village}</span>
-        </div>
+         <div className="form-row">
+           <span className="label">ACCOMPANIED BY</span>
+           <span className="value">{gatePass.accompaniedBy}</span>
+         </div>
 
-        <div className="form-row">
-          <span className="label">ACCOMPANIED BY</span>
-          <span className="value">{gatePass.accompaniedBy}</span>
-        </div>
+         <div className="reason-section">
+           <div className="reason-label">REASON</div>
+           <div className="reason-option">
+             <span className="checkbox">✓</span>
+             {gatePass.reason === 'SICKNESS_DURING_SCHOOL_HOURS' ? 'SICKNESS DURING SCHOOL HOURS' : 
+              gatePass.reason === 'URGENT_WORK_AT_HOME' ? 'URGENT WORK AT HOME' : 'PERSONAL'}
+           </div>
+         </div>
 
-        <div className="reason-section">
-          <div className="label">REASON</div>
-          <div className="reason-option">
-            <span className="checkbox">{gatePass.reason === 'SICKNESS_DURING_SCHOOL_HOURS' ? '✓' : ''}</span>
-            SICKNESS DURING SCHOOL HOURS
-          </div>
-          <div className="reason-option">
-            <span className="checkbox">{gatePass.reason === 'URGENT_WORK_AT_HOME' ? '✓' : ''}</span>
-            URGENT WORK AT HOME
-          </div>
-          <div className="reason-option">
-            <span className="checkbox">{gatePass.reason === 'PERSONAL' ? '✓' : ''}</span>
-            PERSONAL
-          </div>
-        </div>
+         <div className="form-row">
+           <span className="label">VAN DRIVER'S NAME/BUS NO.</span>
+           <span className="value">{gatePass.vanDriverName || gatePass.busNumber}</span>
+         </div>
 
-        <div className="form-row">
-          <span className="label">VAN DRIVER'S NAME/BUS NO.</span>
-          <span className="value">{gatePass.vanDriverName || gatePass.busNumber}</span>
-        </div>
+         <div className="form-row">
+           <span className="label">CONTACT NO.</span>
+           <span className="value">{gatePass.contactNumber}</span>
+           <span className="label" style={{marginLeft: '15px'}}>DISPERSAL TIME</span>
+           <span className="value">{gatePass.dispersalTime}</span>
+         </div>
 
-        <div className="form-row">
-          <span className="label">CONTACT NO.</span>
-          <span className="value">{gatePass.contactNumber}</span>
-        </div>
-
-        <div className="form-row">
-          <span className="label">DISPERSAL TIME</span>
-          <span className="value">{gatePass.dispersalTime}</span>
-        </div>
-
-        <div className="photo-box">Photo</div>
+        
       </div>
 
       <div className="footer">
@@ -293,6 +375,170 @@ export default function GatePassManager({ onClose, userId }: GatePassManagerProp
       </div>
     </div>
   )
+
+  // Gate Pass List View
+  if (viewMode === 'list') {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">Gate Pass Records</h2>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleExportExcel}
+                  disabled={isLoading}
+                  className="bg-green-500 hover:bg-green-600 disabled:bg-gray-400 text-white px-4 py-2 rounded flex items-center gap-2"
+                >
+                  <FiDownload className="w-4 h-4" />
+                  Export Excel
+                </button>
+                <button
+                  onClick={() => setViewMode('create')}
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2"
+                >
+                  <FiPlus className="w-4 h-4" />
+                  New Gate Pass
+                </button>
+                <button
+                  onClick={onClose}
+                  className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded flex items-center gap-2"
+                >
+                  <FiX className="w-4 h-4" />
+                  Close
+                </button>
+              </div>
+            </div>
+
+            {/* Filters */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Search by student name, class, or father's name"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <FiSearch className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Date Filter</label>
+                <div className="relative">
+                  <input
+                    type="date"
+                    value={dateFilter}
+                    onChange={(e) => setDateFilter(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <FiCalendar className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
+                </div>
+              </div>
+              <div className="flex items-end">
+                <button
+                  onClick={() => {
+                    setSearchTerm('')
+                    setDateFilter('')
+                    setPagination(prev => ({ ...prev, page: 1 }))
+                  }}
+                  className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+                >
+                  Clear Filters
+                </button>
+              </div>
+            </div>
+
+            {/* Gate Pass Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse border border-gray-300">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="border border-gray-300 px-4 py-2 text-left">Date/Time</th>
+                    <th className="border border-gray-300 px-4 py-2 text-left">Student Name</th>
+                    <th className="border border-gray-300 px-4 py-2 text-left">Class</th>
+                    <th className="border border-gray-300 px-4 py-2 text-left">Father's Name</th>
+                    <th className="border border-gray-300 px-4 py-2 text-left">Reason</th>
+                    <th className="border border-gray-300 px-4 py-2 text-left">Contact</th>
+                    <th className="border border-gray-300 px-4 py-2 text-left">Created By</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {isLoading ? (
+                    <tr>
+                      <td colSpan={7} className="border border-gray-300 px-4 py-8 text-center">
+                        <div className="flex items-center justify-center">
+                          <div className="animate-spin w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full mr-2"></div>
+                          Loading gate passes...
+                        </div>
+                      </td>
+                    </tr>
+                  ) : gatePasses.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="border border-gray-300 px-4 py-8 text-center text-gray-500">
+                        No gate passes found
+                      </td>
+                    </tr>
+                  ) : (
+                    gatePasses.map((gatePass) => (
+                      <tr key={gatePass.id} className="hover:bg-gray-50">
+                        <td className="border border-gray-300 px-4 py-2">
+                          <div>
+                            <div className="font-medium">{new Date(gatePass.createdAt).toLocaleDateString('en-IN')}</div>
+                            <div className="text-sm text-gray-500">{new Date(gatePass.createdAt).toLocaleTimeString('en-IN')}</div>
+                          </div>
+                        </td>
+                        <td className="border border-gray-300 px-4 py-2 font-medium">{gatePass.studentName}</td>
+                        <td className="border border-gray-300 px-4 py-2">{gatePass.className}</td>
+                        <td className="border border-gray-300 px-4 py-2">{gatePass.fathersName}</td>
+                        <td className="border border-gray-300 px-4 py-2">
+                          <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
+                            {gatePass.reason.replace(/_/g, ' ')}
+                          </span>
+                        </td>
+                        <td className="border border-gray-300 px-4 py-2">{gatePass.contactNumber}</td>
+                        <td className="border border-gray-300 px-4 py-2">{gatePass.createdBy.name}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination */}
+            {pagination.totalPages > 1 && (
+              <div className="flex justify-between items-center mt-6">
+                <div className="text-sm text-gray-600">
+                  Showing {((pagination.page - 1) * pagination.limit) + 1} to {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} records
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setPagination(prev => ({ ...prev, page: prev.page - 1 }))}
+                    disabled={pagination.page === 1}
+                    className="bg-gray-500 hover:bg-gray-600 disabled:bg-gray-300 text-white px-3 py-1 rounded text-sm"
+                  >
+                    Previous
+                  </button>
+                  <span className="px-3 py-1 text-sm">
+                    Page {pagination.page} of {pagination.totalPages}
+                  </span>
+                  <button
+                    onClick={() => setPagination(prev => ({ ...prev, page: prev.page + 1 }))}
+                    disabled={pagination.page === pagination.totalPages}
+                    className="bg-gray-500 hover:bg-gray-600 disabled:bg-gray-300 text-white px-3 py-1 rounded text-sm"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (showPreview) {
     return (
@@ -334,12 +580,21 @@ export default function GatePassManager({ onClose, userId }: GatePassManagerProp
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-800">Create Gate Pass</h2>
-            <button
-              onClick={onClose}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              <FiX className="w-6 h-6" />
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setViewMode('list')}
+                className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded flex items-center gap-2"
+              >
+                <FiList className="w-4 h-4" />
+                View Records
+              </button>
+              <button
+                onClick={onClose}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <FiX className="w-6 h-6" />
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -362,13 +617,28 @@ export default function GatePassManager({ onClose, userId }: GatePassManagerProp
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Class *
                   </label>
-                  <input
-                    type="text"
+                  <select
                     value={gatePass.className}
                     onChange={(e) => handleInputChange('className', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., 8TH"
-                  />
+                  >
+                    <option value="">Select Class</option>
+                    <option value="NURSERY">NURSERY</option>
+                    <option value="LKG">LKG</option>
+                    <option value="UKG">UKG</option>
+                    <option value="1ST">1ST</option>
+                    <option value="2ND">2ND</option>
+                    <option value="3RD">3RD</option>
+                    <option value="4TH">4TH</option>
+                    <option value="5TH">5TH</option>
+                    <option value="6TH">6TH</option>
+                    <option value="7TH">7TH</option>
+                    <option value="8TH">8TH</option>
+                    <option value="9TH">9TH</option>
+                    <option value="10TH">10TH</option>
+                    <option value="11TH">11TH</option>
+                    <option value="12TH">12TH</option>
+                  </select>
                 </div>
               </div>
 
@@ -526,3 +796,5 @@ export default function GatePassManager({ onClose, userId }: GatePassManagerProp
     </div>
   )
 }
+
+

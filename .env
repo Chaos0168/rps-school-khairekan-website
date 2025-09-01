@@ -1,0 +1,2 @@
+DATABASE_URL="postgresql://neondb_owner:npg_lvgGYUum4a2n@ep-square-thunder-aeyykkzt-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+NEXTAUTH_SECRET="indian-school-exam-portal-secret-2024-neon-db-xyz789abc123def456"
