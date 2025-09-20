@@ -6,7 +6,6 @@
     "dev": "next dev",
     "build": "npx prisma generate && next build",
     "start": "next start",
-    "postinstall": "npx prisma generate",
     "lint": "next lint",
     "export": "next build && next export",
     "db:generate": "npx prisma generate",
