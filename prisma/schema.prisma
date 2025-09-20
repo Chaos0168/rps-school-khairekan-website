@@ -335,3 +335,31 @@ enum AcademicResourceType {
   CURRICULUM
   STUDY_MATERIAL
 }
+
+model AdmissionTestRegistration {
+  id                String   @id @default(cuid())
+  fullName          String
+  fathersName       String
+  mothersName       String
+  currentClass      String
+  presentSchool     String
+  parentMobile      String
+  residentialAddress String
+  hasAppearedNTSE   Boolean
+  passportPhoto     String?  // File URL or base64
+  aadharPhoto       String?  // File URL or base64
+  admitCardId       String   @unique @default(cuid())
+  registrationDate  DateTime @default(now())
+  status            RegistrationStatus @default(PENDING)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@map("admission_test_registrations")
+}
+
+enum RegistrationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  COMPLETED
+}

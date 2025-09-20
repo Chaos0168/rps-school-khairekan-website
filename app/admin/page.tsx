@@ -1,4 +1,4 @@
-'use client'
+ 'use client'
 
 import React, { useState, useEffect } from 'react'
 import { FiUsers, FiBookOpen, FiFileText, FiSettings, FiBell, FiEdit3, FiEye, FiTrash2, FiPlus, FiBook, FiAward, FiBarChart, FiCalendar, FiMail, FiHome, FiLogOut, FiMenu, FiX, FiLogOut as FiGatePass } from 'react-icons/fi'
@@ -10,6 +10,7 @@ import TermsManager from '../../components/TermsManager'
 import SubjectsManager from '../../components/SubjectsManager'
 import GatePassManager from '../../components/GatePassManager'
 import AcademicResourcesManager from '../../components/AcademicResourcesManager'
+import AdmissionTestManager from '../../components/AdmissionTestManager'
 
 interface User {
   id: string
@@ -168,6 +169,7 @@ export default function AdminPanel() {
     { id: 'news', label: 'News', icon: FiFileText },
     { id: 'thoughts', label: 'Thought of Day', icon: FiEdit3 },
     { id: 'gate-pass', label: 'Gate Pass', icon: FiGatePass },
+    { id: 'admission-test', label: 'Admission Test', icon: FiUsers },
     { id: 'academic-resources', label: 'Academic Resources', icon: FiAward },
     { id: 'users', label: 'User Management', icon: FiUsers },
     { id: 'academic', label: 'Academic Structure', icon: FiBookOpen },
@@ -309,6 +311,7 @@ export default function AdminPanel() {
           {activeTab === 'news' && user && <NewsManager userId={user.id} />}
           {activeTab === 'thoughts' && user && <ThoughtsManager userId={user.id} />}
           {activeTab === 'gate-pass' && user && <GatePassView user={user} />}
+          {activeTab === 'admission-test' && <AdmissionTestManager />}
           {activeTab === 'academic-resources' && user && <AcademicResourcesManager userId={user.id} />}
           {activeTab === 'users' && <UserManagement />}
           {activeTab === 'academic' && <AcademicManagement />}

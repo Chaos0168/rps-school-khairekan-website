@@ -11,10 +11,10 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/admin/page": [
+    "/admission-test/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin/page.js"
+      "static/chunks/app/admission-test/page.js"
     ]
   }
 }

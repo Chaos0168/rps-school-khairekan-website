@@ -272,13 +272,10 @@ export default function HomePage() {
               <button 
                 className="btn-primary group"
                 onClick={() => {
-                  const admissionSection = document.getElementById('notices-section')
-                  if (admissionSection) {
-                    admissionSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                  }
+                  window.location.href = '/admission-test'
                 }}
               >
-                <span className="relative z-10">Admission Open 2026-27</span>
+                <span className="relative z-10">Register for Admission Test</span>
               </button>
               <button 
                 className="btn-secondary"
