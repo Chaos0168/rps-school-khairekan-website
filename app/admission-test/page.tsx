@@ -16,6 +16,18 @@ interface RegistrationData {
   aadharPhoto: File | null
 }
 
+interface ValidationErrors {
+  fullName?: string
+  fathersName?: string
+  mothersName?: string
+  currentClass?: string
+  presentSchool?: string
+  parentMobile?: string
+  residentialAddress?: string
+  passportPhoto?: string
+  aadharPhoto?: string
+}
+
 export default function AdmissionTestRegistration() {
   const [formData, setFormData] = useState<RegistrationData>({
     fullName: '',
@@ -33,7 +45,7 @@ export default function AdmissionTestRegistration() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [admitCardId, setAdmitCardId] = useState('')
-  const [errors, setErrors] = useState<Partial<RegistrationData>>({})
+  const [errors, setErrors] = useState<ValidationErrors>({})
 
   const classes = ['5TH', '6TH', '7TH', '8TH', '9TH', '10TH', '11TH']
 
@@ -45,7 +57,7 @@ export default function AdmissionTestRegistration() {
     }))
     
     // Clear error when user starts typing
-    if (errors[name as keyof RegistrationData]) {
+    if (errors[name as keyof ValidationErrors]) {
       setErrors(prev => ({
         ...prev,
         [name]: undefined
@@ -88,7 +100,7 @@ export default function AdmissionTestRegistration() {
   }
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<RegistrationData> = {}
+    const newErrors: ValidationErrors = {}
     
     if (!formData.fullName.trim()) newErrors.fullName = 'Full Name is required'
     if (!formData.fathersName.trim()) newErrors.fathersName = 'Father\'s Name is required'
