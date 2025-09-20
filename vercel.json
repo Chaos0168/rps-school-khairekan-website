@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "npx prisma generate && npm run build",
   "env": {
     "PRISMA_SKIP_POSTINSTALL_GENERATE": "true",
     "SKIP_ENV_VALIDATION": "true"
